@@ -1,0 +1,6 @@
+{
+  "appId": "com.salati.app",
+  "appName": "صلاتي",
+  "webDir": "www",
+  "bundledWebRuntime": false
+}

@@ -1,0 +1,1151 @@
+<!doctype html>
+<html lang="ar" dir="rtl"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0A1C18">
+<title>مواقيت الصلاة — الجزائر</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&amp;family=Amiri:wght@400;700&amp;display=swap" rel="stylesheet">
+<style>
+  :root{
+    --night:     #0A1C18;
+    --night-2:   #12352D;
+    --surface:   rgba(246,239,221,0.035);
+    --surface-2: rgba(246,239,221,0.07);
+    --sand:      #F6EEDD;
+    --sand-2:    #EADDBE;
+    --gold:      #C9A227;
+    --gold-soft: #E8CE82;
+    --gold-deep: #9C7C1E;
+    --ink:       #16211D;
+    --muted:     rgba(246,239,221,0.55);
+    --faint:     rgba(246,239,221,0.4);
+    --line:      rgba(246,239,221,0.13);
+    --line-soft: rgba(246,239,221,0.08);
+    --danger:    #E8998A;
+    --r:         18px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(1100px 520px at 85% -8%, rgba(26,77,68,0.55) 0%, transparent 60%),
+      radial-gradient(700px 460px at 8% 12%, rgba(12,38,34,0.9) 0%, transparent 55%),
+      radial-gradient(900px 340px at 50% 108%, rgba(201,162,39,0.06) 0%, transparent 55%),
+      var(--night);
+    color: var(--sand);
+    font-family: 'Tajawal', system-ui, sans-serif;
+    min-height: 100vh;
+    padding: 26px max(18px, env(safe-area-inset-left)) 56px max(18px, env(safe-area-inset-right));
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+  }
+  ::selection{ background: rgba(201,162,39,0.35); color: var(--sand); }
+  ::-webkit-scrollbar{ width: 8px; }
+  ::-webkit-scrollbar-track{ background: var(--night); }
+  ::-webkit-scrollbar-thumb{ background: var(--gold-deep); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover{ background: var(--gold); }
+  :focus-visible{ outline: 2px solid var(--gold-soft); outline-offset: 2px; border-radius: 4px; }
+
+  .wrap{ max-width: 880px; margin: 0 auto; }
+
+  .page-title{ text-align:center; margin: 4px 0 22px; }
+  .page-title h1{ font-family:'Amiri', serif; font-size: 34px; color: var(--gold-soft); line-height:1.15; margin:0; }
+  .page-title p{ margin:6px 0 0; font-size:12.5px; color: var(--faint); font-weight:400; letter-spacing:.2px; }
+
+  .locbox{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+  .locbox input, .locbox button{
+    font-family:'Tajawal', system-ui, sans-serif;
+    -webkit-appearance: none;
+    appearance: none;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    padding: 9px 16px;
+    font-size: 14px;
+    background: var(--surface-2);
+    color: var(--sand);
+  }
+  .locbox input{
+    min-width: 168px;
+    transition: border-color .2s ease, background .2s ease;
+  }
+  .locbox input::placeholder{ color: var(--faint); }
+  .locbox input:focus{ outline:none; border-color: rgba(201,162,39,.55); background: rgba(246,239,221,.09); }
+  .locbox button{ cursor:pointer; transition: filter .15s ease, background .15s ease, border-color .15s ease; }
+  .locbox button:hover{ filter: brightness(1.12); }
+  .locbox button.primary{ background: linear-gradient(135deg, var(--gold), var(--gold-deep)); color:#1B2320; border:none; font-weight:700; }
+  .locbox button.ghost{ background: transparent; color: var(--gold-soft); border:1px solid rgba(201,162,39,.45); font-weight:500; }
+  .locbox button.icon{ display:inline-flex; align-items:center; gap:7px; padding:9px 12px; color:var(--sand); }
+  .locbox button.icon svg{ width:16px; height:16px; }
+  .locbox button.icon .chev{ transition: transform .3s ease; }
+  .locbox button.icon.open .chev{ transform: rotate(180deg); }
+
+  /* ─── Floating settings button (FAB) ─── */
+  .settings-fab{
+    position:fixed;
+    top: max(14px, env(safe-area-inset-top));
+    right: max(14px, env(safe-area-inset-right));
+    z-index: 50;
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    border: 1px solid rgba(201,162,39,.45);
+    background: rgba(10,28,24,.8);
+    backdrop-filter: blur(10px) saturate(1.2);
+    -webkit-backdrop-filter: blur(10px) saturate(1.2);
+    color: var(--gold-soft);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center; justify-content: center;
+    transition: filter .15s ease, background .15s ease, border-color .15s ease, transform .2s ease;
+  }
+  .settings-fab:hover{ filter: brightness(1.15); background: rgba(201,162,39,.12); }
+  .settings-fab svg{ width:20px; height:20px; }
+  .settings-fab.open{ border-color: rgba(201,162,39,.7); background: rgba(201,162,39,.16); transform: rotate(90deg); }
+  .settings-fab .icon-close{ display:none; }
+  .settings-fab.open .icon-gear{ display:none; }
+  .settings-fab.open .icon-close{ display:block; }
+
+  /* ─── Settings panel (full-screen sheet) ─── */
+  .settings-panel{
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    background:
+      radial-gradient(1100px 520px at 85% -8%, rgba(26,77,68,0.55) 0%, transparent 60%),
+      radial-gradient(700px 460px at 8% 12%, rgba(12,38,34,0.9) 0%, transparent 55%),
+      var(--night);
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(12px) scale(.995);
+    transition: opacity .32s ease, transform .32s ease, visibility .32s;
+    pointer-events: none;
+  }
+  .settings-panel.open{ opacity: 1; visibility: visible; transform: none; pointer-events: auto; }
+  .sh-head{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px max(20px, env(safe-area-inset-left)) 12px max(20px, env(safe-area-inset-right));
+    background: rgba(10,28,24,.85);
+    backdrop-filter: blur(14px) saturate(1.2);
+    -webkit-backdrop-filter: blur(14px) saturate(1.2);
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .sh-title{ display: inline-flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 700; color: var(--gold-soft); font-family:'Amiri', serif; }
+  .sh-title svg{ width: 19px; height: 19px; color: var(--gold-soft); }
+  .sh-close{
+    -webkit-appearance:none; appearance:none;
+    display: inline-flex; align-items:center; justify-content:center;
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    background: var(--surface-2);
+    color: var(--sand);
+    cursor: pointer;
+    transition: background .15s ease, border-color .15s ease, transform .2s ease;
+  }
+  .sh-close:hover{ background: rgba(246,239,221,.12); border-color: rgba(201,162,39,.5); transform: rotate(90deg); }
+  .sh-close svg{ width: 18px; height: 18px; }
+  .sh-body{
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 18px max(20px, env(safe-area-inset-right)) calc(48px + env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
+  }
+  .sh-body .settings-sec{ padding: 2px 0 18px; }
+  .sh-body .settings-sec + .settings-sec{ border-top: 1px solid var(--line-soft); padding-top: 18px; }
+  .sh-body .settings-sec h3{ margin: 0 0 6px; font-size: 15px; color: var(--gold-soft); font-weight: 700; }
+  .sh-body .settings-sec p{ margin: 0 0 16px; font-size: 12.5px; color: var(--faint); line-height: 1.7; }
+  .tune-grid{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  @media (max-width: 560px){ .tune-grid{ grid-template-columns: repeat(2, 1fr);} }
+  .tune-field label{ display:block; font-size: 12.5px; color: var(--muted); margin-bottom: 6px; }
+  .tune-field .stepper{
+    display:flex;
+    align-items:center;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow:hidden;
+  }
+  .tune-field .stepper button{
+    background: rgba(246,239,221,0.05);
+    border:none;
+    color: var(--sand-2);
+    width:34px; height:38px;
+    font-size:16px;
+    cursor:pointer;
+    transition: background .15s ease;
+  }
+  .tune-field .stepper button:hover{ background: rgba(201,162,39,0.22); }
+  .tune-field .stepper input{
+    flex:1;
+    text-align:center;
+    background:transparent;
+    border:none;
+    color: var(--sand);
+    font-family:'Tajawal', system-ui, sans-serif;
+    font-size:14px;
+    font-variant-numeric: tabular-nums;
+    -moz-appearance: textfield;
+  }
+  .tune-field .stepper input::-webkit-outer-spin-button,
+  .tune-field .stepper input::-webkit-inner-spin-button{ -webkit-appearance: none; margin:0; }
+  .panel-actions{ display:flex; gap:10px; flex-wrap:wrap; }
+  .panel-actions button{
+    font-family:'Tajawal', system-ui, sans-serif;
+    border-radius: 999px;
+    border:none;
+    padding:10px 20px;
+    font-size:14px;
+    cursor:pointer;
+    font-weight:700;
+  }
+  .panel-actions .apply{ background: linear-gradient(135deg, var(--gold), var(--gold-deep)); color:#1B2320; }
+  .panel-actions .reset{ background:transparent; color: var(--faint); border:1px solid var(--line); font-weight:500; }
+  .panel-actions .reset:hover{ color: var(--sand); border-color: var(--line); filter:none; }
+
+  /* ─── Notifications & adhan panel ─── */
+  .toggle-row{
+    display:flex; align-items:center; justify-content:space-between;
+    gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .toggle-row:last-of-type{ border-bottom:none; }
+  .toggle-row .tr-text strong{ display:block; font-size:14px; color: var(--sand-2); margin-bottom:2px; }
+  .toggle-row .tr-text span{ font-size:12px; color: var(--faint); line-height:1.6; }
+  .switch{ position:relative; width:46px; height:26px; flex:none; }
+  .switch input{ opacity:0; width:0; height:0; }
+  .switch .slider{
+    position:absolute; inset:0; cursor:pointer;
+    background: rgba(246,239,221,0.14);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    transition: background .2s ease;
+  }
+  .switch .slider::before{
+    content:""; position:absolute;
+    height:18px; width:18px; right:3px; top:50%; transform:translateY(-50%);
+    background: var(--sand); border-radius:50%;
+    transition: right .2s ease, background .2s ease;
+  }
+  .switch input:checked + .slider{ background: linear-gradient(135deg, var(--gold), var(--gold-deep)); border-color: transparent; }
+  .switch input:checked + .slider::before{ right:23px; background:#1B2320; }
+
+  .adhan-sub{
+    margin-top: -4px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line-soft);
+    display:none;
+  }
+  .adhan-sub.open{ display:block; }
+  .adhan-sub .file-row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+  .adhan-sub label.filebtn{
+    display:inline-flex; align-items:center; gap:6px;
+    font-size:13px; color: var(--gold-soft);
+    border: 1px solid rgba(201,162,39,.4);
+    border-radius: 999px;
+    padding: 8px 16px;
+    cursor:pointer;
+  }
+  .adhan-sub input[type=file]{ display:none; }
+  .adhan-sub .filename{ font-size:12px; color: var(--faint); }
+  .adhan-sub .testbtn{
+    font-family:'Tajawal', system-ui, sans-serif;
+    background: transparent; border:1px solid var(--line); color: var(--sand-2);
+    border-radius:999px; padding:8px 16px; font-size:13px; cursor:pointer;
+  }
+  .adhan-sub .testbtn:hover{ border-color: rgba(201,162,39,.5); color: var(--gold-soft); }
+  .notif-hint{ font-size:11.5px; color: var(--faint); margin-top:10px; line-height:1.7; }
+
+  /* ─── Hero ─── */
+  .hero{
+    border: 1px solid var(--line);
+    background: linear-gradient(165deg, rgba(246,239,221,0.055) 0%, rgba(246,239,221,0.015) 100%);
+    border-radius: 24px;
+    padding: 34px 30px 30px;
+    text-align:center;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 22px;
+    box-shadow: 0 24px 60px -30px rgba(0,0,0,.75);
+  }
+  .hero::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image: radial-gradient(circle, rgba(201,162,39,0.12) 1.5px, transparent 1.5px);
+    background-size: 24px 24px;
+    -webkit-mask-image: radial-gradient(70% 60% at 50% 30%, #000 30%, transparent 100%);
+    mask-image: radial-gradient(70% 60% at 50% 30%, #000 30%, transparent 100%);
+    opacity:.55;
+    pointer-events:none;
+  }
+  .hero > *{ position:relative; }
+
+  .hero-meta{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap: 14px;
+    flex-wrap:wrap;
+    margin-bottom: 18px;
+  }
+  .clock-chip{
+    display:inline-flex; align-items:center; gap:8px;
+    background: rgba(246,239,221,0.06);
+    border:1px solid var(--line);
+    border-radius:999px;
+    padding:5px 14px;
+    font-size:13.5px;
+    font-variant-numeric: tabular-nums;
+    color: var(--gold-soft);
+    letter-spacing:.6px;
+  }
+  .clock-chip span{ color: var(--faint); font-size:12px; margin-inline-start:-4px; }
+  .hero-date{ font-size:13px; color: var(--faint); }
+  .hero-hijri{ font-size:13.5px; color: rgba(201,162,39,.85); }
+
+  .hero-city{ font-size:15px; color: var(--muted); margin-bottom:2px; display:flex; align-items:center; justify-content:center; gap:8px; flex-wrap:wrap; }
+  .src-badge{
+    display:inline-flex; align-items:center; gap:5px;
+    font-size:11px; font-weight:700;
+    padding:3px 10px; border-radius:999px;
+    letter-spacing:.2px;
+  }
+  .src-badge.online{ background: rgba(80,180,120,.15); color:#8fd6a8; border:1px solid rgba(80,180,120,.35); }
+  .src-badge.offline{ background: rgba(201,162,39,.15); color: var(--gold-soft); border:1px solid rgba(201,162,39,.4); }
+  .hero-next-label{
+    display:inline-flex; align-items:center; gap:8px;
+    margin-top:20px;
+    font-size:13px;
+    color: var(--faint);
+  }
+  .hero-next-label i{
+    width:7px; height:7px; border-radius:50%;
+    background: var(--gold-soft);
+    box-shadow: 0 0 0 4px rgba(201,162,39,.18), 0 0 12px 2px rgba(201,162,39,.5);
+    animation: pulse 2.2s ease-in-out infinite;
+  }
+  @keyframes pulse{ 0%,100%{ opacity:1; } 50%{ opacity:.45; } }
+  @media (prefers-reduced-motion: reduce){ .hero-next-label i{ animation:none; } }
+
+  .hero-next-name{
+    font-family:'Amiri', serif;
+    font-size: clamp(40px, 7vw, 56px);
+    color: var(--sand);
+    line-height:1.25;
+    margin: 4px 0 2px;
+  }
+  .hero-next-time{ font-size:15px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .hero-countdown{
+    font-size: clamp(38px, 6.5vw, 50px);
+    font-weight: 900;
+    color: var(--gold-soft);
+    letter-spacing:1.5px;
+    font-variant-numeric: tabular-nums;
+    line-height:1.3;
+  }
+  .hero-countdown small{
+    font-size:14px;
+    font-weight:400;
+    color: var(--faint);
+    letter-spacing:.2px;
+    margin-inline-start:8px;
+  }
+
+  /* ─── Prayer grid ─── */
+  .grid{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  @media (max-width: 620px){ .grid{ grid-template-columns: repeat(2, 1fr);} }
+
+  .card{
+    border: 1px solid var(--line);
+    border-radius: var(--r);
+    padding: 18px 14px 16px;
+    background: var(--surface);
+    text-align:center;
+    transition: border-color .25s ease, background .25s ease, transform .25s ease, opacity .25s ease;
+    position:relative;
+  }
+  .card:hover{ transform: translateY(-2px); border-color: rgba(201,162,39,.35); background: var(--surface-2); }
+  .card .pname{ font-size:14px; color: var(--muted); margin-bottom:9px; transition: color .25s ease; }
+  .card .ptime{ font-family:'Amiri', serif; font-size: 27px; font-variant-numeric: tabular-nums; }
+  .card.past{ opacity:.48; }
+  .card.active{
+    border-color: rgba(201,162,39,.65);
+    background: linear-gradient(160deg, rgba(201,162,39,.16), rgba(201,162,39,.04));
+    box-shadow: 0 0 0 1px rgba(201,162,39,.18), 0 18px 40px -24px rgba(0,0,0,.8);
+  }
+  .card.active .pname{ color: var(--gold-soft); font-weight:700; }
+  .card.active .ptime{ color: var(--sand-2); }
+
+
+
+  .state{ text-align:center; padding: 48px 0; color: var(--muted); font-size:14px; }
+  .state.err{ color: var(--danger); }
+
+  @media (max-width: 540px){
+    body{
+      padding: 20px max(14px, env(safe-area-inset-right)) 40px max(14px, env(safe-area-inset-left));
+    }
+    .locbox{ width:100%; }
+    .locbox input, .locbox button{ min-height:44px; }
+    .locbox input{ min-width: 0; flex:1 1 120px; font-size:16px; }
+    .locbox button.primary{ padding: 9px 20px; }
+    .locbox button.icon{ padding: 9px 13px; }
+    .locbox button.ghost{ flex: 1 1 100%; justify-content:center; }
+    .hero{ padding: 24px 14px 20px; border-radius: 20px; }
+    .hero-meta{ gap:8px 10px; margin-bottom:14px; }
+    .hero-date, .hero-hijri{ font-size:12px; }
+    .hero-next-label{ margin-top:14px; }
+    .hero-next-name{ font-size: clamp(34px, 10.5vw, 40px); }
+    .hero-countdown{ font-size: clamp(34px, 10.5vw, 40px); letter-spacing:.5px; }
+    .hero-countdown small{ font-size:12.5px; margin-inline-start:6px; }
+    .grid{ gap:10px; }
+    .card{ padding: 14px 8px 12px; }
+    .card:active{ transform: scale(.97); }
+    .card .ptime{ font-size: 24px; }
+    .tune-field .stepper button{ width:44px; height:46px; }
+  }
+
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <button id="settingsBtn" class="settings-fab" aria-expanded="false" aria-controls="settingsPanel" aria-label="الإعدادات" title="الإعدادات">
+    <svg class="icon-gear" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="3"></circle>
+      <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.55V21a2 2 0 1 1-4 0v-.09a1.7 1.7 0 0 0-1-1.55 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.55-1H3a2 2 0 1 1 0-4h.09a1.7 1.7 0 0 0 1.55-1 1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34h.09a1.7 1.7 0 0 0 1-1.55V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87v.09a1.7 1.7 0 0 0 1.55 1H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.55 1z"></path>
+    </svg>
+    <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 6 6 18"></path>
+      <path d="m6 6 12 12"></path>
+    </svg>
+  </button>
+
+  <div class="page-title">
+    <h1>مواقيت الصلاة</h1>
+    <p>لوحة صلاة حيّة — طريقة الحساب الجزائرية</p>
+  </div>
+
+  <main id="content">
+    <div class="state">جارٍ تحميل مواقيت الصلاة…</div>
+  </main>
+
+</div>
+
+<div class="settings-panel" id="settingsPanel" role="dialog" aria-modal="true" aria-label="الإعدادات">
+  <div class="sh-head">
+    <div class="sh-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3"></circle>
+        <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-1.87-.34 1.7 1.7 0 0 0-1 1.55V21a2 2 0 1 1-4 0v-.09a1.7 1.7 0 0 0-1-1.55 1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.7 1.7 0 0 0 .34-1.87 1.7 1.7 0 0 0-1.55-1H3a2 2 0 1 1 0-4h.09a1.7 1.7 0 0 0 1.55-1 1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.7 1.7 0 0 0 1.87.34h.09a1.7 1.7 0 0 0 1-1.55V3a2 2 0 1 1 4 0v.09a1.7 1.7 0 0 0 1 1.55 1.7 1.7 0 0 0 1.87-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.7 1.7 0 0 0-.34 1.87v.09a1.7 1.7 0 0 0 1.55 1H21a2 2 0 1 1 0 4h-.09a1.7 1.7 0 0 0-1.55 1z"></path>
+      </svg>
+      <span>الإعدادات</span>
+    </div>
+    <button id="settingsClose" class="sh-close" aria-label="إغلاق الإعدادات" title="إغلاق">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M18 6 6 18"></path>
+        <path d="m6 6 12 12"></path>
+      </svg>
+    </button>
+  </div>
+
+  <div class="sh-body">
+    <section class="settings-sec loc-sec">
+      <h3>المدينة والموقع</h3>
+      <p>اختر مدينة في الجزائر، أو استخدم موقعك الحالي لتحديد المواقيت تلقائيًا. يجري استخدام الحساب المحلي عند انقطاع الإنترنت.</p>
+      <div class="locbox">
+      <input id="cityInput" type="text" placeholder="اسم المدينة (مثال: وهران)" aria-label="اسم المدينة">
+        
+        <button id="searchBtn" class="primary">بحث</button>
+      </div>
+    </section>
+
+    <section class="settings-sec">
+      <h3>تصحيح يدوي — مطابقة تطبيق أذان الجزائر الرسمي</h3>
+      <p>إذا لاحظت فرقًا بين هذه اللوحة وتطبيق أذان الجزائر او المسجد القريب من منزلك، أدخل الفرق بالدقائق لكل صلاة (موجب = تأخير، سالب = تقديم). يُحفظ التصحيح ويُطبّق تلقائيًا في كل مرة.</p>
+      <div class="tune-grid" id="tuneGrid"></div>
+      <div class="panel-actions">
+        <button class="apply" id="tuneApply">تطبيق التصحيح</button>
+        <button class="reset" id="tuneReset">إعادة الضبط للصفر</button>
+      </div>
+    </section>
+
+    <section class="settings-sec">
+      <h3>التنبيهات والأذان</h3>
+      <p>فعّل أيًا منهما بشكل مستقل: تنبيه مرئي على الجهاز عند دخول وقت الصلاة، و/أو صوت أذان يُشغَّل تلقائيًا.</p>
+
+      <div class="toggle-row">
+        <div class="tr-text">
+          <strong>🔔 الإشعارات</strong>
+          <span>تنبيه من المتصفح عند دخول كل وقت صلاة. يعمل فقط أثناء فتح هذه الصفحة.</span>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="notifToggle">
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="toggle-row">
+        <div class="tr-text">
+          <strong>🔊 الأذان الصوتي</strong>
+          <span>تشغيل صوت تلقائيًا عند دخول وقت الصلاة.</span>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="adhanToggle">
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="adhan-sub" id="adhanSub">
+        <div class="file-row">
+          <label class="filebtn">
+            📁 اختيار ملف أذان من جهازك
+            <input type="file" id="adhanFile" accept="audio/*">
+          </label>
+          <span class="filename" id="adhanFileName">لم يُختار ملف — سيُستخدم صوت تنبيه بسيط بدلاً منه</span>
+          <button type="button" class="testbtn" id="adhanTest">▶ تجربة الصوت</button>
+        </div>
+        <div class="notif-hint">لأسباب حقوقية لا تتضمن اللوحة تسجيل أذان جاهزًا؛ يمكنك اختيار ملف صوتي تملكه من جهازك. بدون اختيار ملف، تُشغَّل نغمة تنبيه بسيطة فقط.</div>
+      </div>
+
+      <div class="notif-hint">ملاحظة: الإشعارات والصوت يعملان فقط طالما الصفحة مفتوحة في المتصفح على هذا الجهاز — وليس كتطبيق يعمل في الخلفية.</div>
+    </section>
+  </div>
+</div>
+
+<script>
+const PRAYERS = [
+  { key: 'Fajr',    ar: 'الفجر'   },
+  { key: 'Sunrise', ar: 'الشروق'  },
+  { key: 'Dhuhr',   ar: 'الظهر'   },
+  { key: 'Asr',     ar: 'العصر'   },
+  { key: 'Maghrib', ar: 'المغرب'  },
+  { key: 'Isha',    ar: 'العشاء'  },
+];
+const contentEl = document.getElementById('content');
+const cityInput = document.getElementById('cityInput');
+const settingsBtn = document.getElementById('settingsBtn');
+
+/* =========================================================================
+   وضع عدم الاتصال — حساب مواقيت الصلاة محليًا بالكامل داخل المتصفح
+   (بدون أي طلب شبكة)، يُستخدم تلقائيًا كلما تعذّر الوصول إلى Aladhan API.
+   الطريقة: زاوية الفجر 18°، زاوية العشاء 17° (مطابقة لطريقة "الجزائر"
+   الرسمية)، والعصر بمعامل الظل القياسي (1). موقع الشمس ومعادلة الزمن
+   محسوبان بصيغة Meeus عالية الدقة (± ثوانٍ قليلة، وليس صيغة مبسطة).
+   ========================================================================= */
+const D2R = Math.PI/180, R2D = 180/Math.PI;
+function mod(a,b){ return a - b*Math.floor(a/b); }
+
+function gregorianToJDN(y, m, d){
+  const a = Math.floor((14 - m)/12);
+  const y2 = y + 4800 - a;
+  const m2 = m + 12*a - 3;
+  return d + Math.floor((153*m2+2)/5) + 365*y2 + Math.floor(y2/4) - Math.floor(y2/100) + Math.floor(y2/400) - 32045;
+}
+
+function sunPosition(jd){
+  // Higher-precision solar position + equation of time
+  // (Meeus, "Astronomical Algorithms", ch. 25 low-accuracy solar coordinates + ch. 28 equation of time).
+  // Accurate to a few seconds of time, vs. the earlier single-term approximation (~1-2 min error).
+  const T = (jd - 2451545.0) / 36525;
+  const L0 = mod(280.46646 + 36000.76983*T + 0.0003032*T*T, 360);
+  const M  = mod(357.52911 + 35999.05029*T - 0.0001537*T*T, 360);
+  const e  = 0.016708634 - 0.000042037*T - 0.0000001267*T*T;
+  const Mr = M*D2R;
+  const C = (1.914602 - 0.004817*T - 0.000014*T*T)*Math.sin(Mr)
+          + (0.019993 - 0.000101*T)*Math.sin(2*Mr)
+          + 0.000289*Math.sin(3*Mr);
+  const trueLong = L0 + C;
+  const omega = 125.04 - 1934.136*T;
+  const lambda = trueLong - 0.00569 - 0.00478*Math.sin(omega*D2R);
+
+  const eps0 = 23 + (26 + 21.448/60)/60 - (46.8150*T + 0.00059*T*T - 0.001813*T*T*T)/3600;
+  const eps  = eps0 + 0.00256*Math.cos(omega*D2R);
+
+  const lambdaR = lambda*D2R, epsR = eps*D2R;
+  const decl = Math.asin(Math.sin(epsR)*Math.sin(lambdaR));
+
+  const y  = Math.pow(Math.tan(epsR/2), 2);
+  const L0r = L0*D2R;
+  const E = y*Math.sin(2*L0r) - 2*e*Math.sin(Mr) + 4*e*y*Math.sin(Mr)*Math.cos(2*L0r)
+          - 0.5*y*y*Math.sin(4*L0r) - 1.25*e*e*Math.sin(2*Mr); // radians
+  const eqtMinutes = E * R2D * 4;
+  return { decl, eqt: eqtMinutes/60 };
+}
+
+function hourAngle(lat, decl, angleDeg){
+  const latR = lat*D2R;
+  const val = (-Math.sin(angleDeg*D2R) - Math.sin(latR)*Math.sin(decl)) / (Math.cos(latR)*Math.cos(decl));
+  return Math.acos(Math.max(-1, Math.min(1, val))) * R2D / 15;
+}
+
+function asrHourAngle(lat, decl, factor){
+  const latR = lat*D2R;
+  const diff = Math.abs(latR - decl);
+  const angle = -R2D * Math.atan(1/(factor + Math.tan(diff)));
+  return hourAngle(lat, decl, angle);
+}
+
+function decToHHMM(t){
+  t = mod(t, 24);
+  let h = Math.floor(t);
+  let m = Math.round((t - h) * 60);
+  if(m === 60){ m = 0; h = mod(h+1, 24); }
+  return String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0');
+}
+
+function addMinutesToHHMM(hhmm, minutes){
+  const [h,m] = hhmm.split(':').map(Number);
+  let total = mod(h*60 + m + minutes, 24*60);
+  const hh = Math.floor(total/60), mm = total % 60;
+  return String(hh).padStart(2,'0') + ':' + String(mm).padStart(2,'0');
+}
+
+// Kuwaiti/tabular algorithm — Hijri date approximation (may differ ±1 day from the
+// officially sighted calendar; good enough for display purposes offline)
+function gregorianToHijri(date){
+  const jdn = gregorianToJDN(date.getFullYear(), date.getMonth()+1, date.getDate());
+  let l = jdn - 1948440 + 10632;
+  const n = Math.floor((l - 1) / 10631);
+  l = l - 10631 * n + 354;
+  const j = Math.floor((10985 - l) / 5316) * Math.floor((50 * l) / 17719) + Math.floor(l / 5670) * Math.floor((43 * l) / 15238);
+  l = l - Math.floor((30 - j) / 15) * Math.floor((17719 * j) / 50) - Math.floor(j / 16) * Math.floor((15238 * j) / 43) + 29;
+  const month = Math.floor((24 * l) / 709);
+  const day = l - Math.floor((709 * month) / 24);
+  const year = 30 * n + j - 30;
+  return { day, month, year };
+}
+const HIJRI_MONTHS_AR = ['محرم','صفر','ربيع الأول','ربيع الثاني','جمادى الأولى','جمادى الآخرة','رجب','شعبان','رمضان','شوال','ذو القعدة','ذو الحجة'];
+const WEEKDAYS_AR = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+
+function computeLocalData(date, lat, lon, cityLabel){
+  const jd = gregorianToJDN(date.getFullYear(), date.getMonth()+1, date.getDate());
+  const { decl, eqt } = sunPosition(jd);
+  const tz = -date.getTimezoneOffset()/60; // device's own UTC offset
+  const dhuhr = 12 + tz - lon/15 - eqt;
+
+  const hFajr = hourAngle(lat, decl, 18);
+  const hSun  = hourAngle(lat, decl, 0.833);
+  const hIsha = hourAngle(lat, decl, 17);
+  const hAsr  = asrHourAngle(lat, decl, 1);
+
+  let timings = {
+    Fajr:    decToHHMM(dhuhr - hFajr),
+    Sunrise: decToHHMM(dhuhr - hSun),
+    Dhuhr:   decToHHMM(dhuhr),
+    Asr:     decToHHMM(dhuhr + hAsr),
+    Maghrib: decToHHMM(dhuhr + hSun),
+    Isha:    decToHHMM(dhuhr + hIsha),
+  };
+  TUNE_PRAYERS.forEach(p=>{
+    if(tune[p.key]) timings[p.key] = addMinutesToHHMM(timings[p.key], tune[p.key]);
+  });
+
+  const hijri = gregorianToHijri(date);
+  const weekdayAr = WEEKDAYS_AR[date.getDay()];
+
+  return {
+    timings,
+    date: {
+      hijri: {
+        day: String(hijri.day), year: String(hijri.year),
+        month: { ar: HIJRI_MONTHS_AR[hijri.month-1] || '' },
+        weekday: { ar: weekdayAr + ' (تقريبي)' }
+      },
+      gregorian: {
+        day: String(date.getDate()),
+        year: String(date.getFullYear()),
+        weekday: { en: date.toLocaleDateString('en-US', { weekday:'long' }) },
+        month:   { en: date.toLocaleDateString('en-US', { month:'long' }) }
+      }
+    }
+  };
+}
+
+// Small table of Algerian wilaya capitals + a few major cities for offline
+// city search (used only when the API is unreachable). [lat, lon]
+const ALGERIA_CITIES = {
+  'adrar':[27.87,-0.29], 'chlef':[36.165,1.335], 'laghouat':[33.80,2.865],
+  'oum el bouaghi':[35.87,7.11], 'batna':[35.555,6.174], 'bejaia':[36.75,5.083], 'بجاية':[36.75,5.083],
+  'biskra':[34.85,5.728], 'bechar':[31.615,-2.218], 'blida':[36.470,2.828], 'البليدة':[36.470,2.828],
+  'bouira':[36.373,3.902], 'tamanrasset':[22.785,5.522], 'tebessa':[35.404,8.124],
+  'tlemcen':[34.878,-1.315], 'تلمسان':[34.878,-1.315], 'tiaret':[35.371,1.317],
+  'tizi ouzou':[36.712,4.045], 'تيزي وزو':[36.712,4.045],
+  'alger':[36.752,3.042], 'algiers':[36.752,3.042], 'الجزائر':[36.752,3.042],
+  'djelfa':[34.673,3.263], 'jijel':[36.822,5.766], 'setif':[36.190,5.408], 'سطيف':[36.190,5.408],
+  'saida':[34.830,0.151], 'skikda':[36.876,6.909], 'sidi bel abbes':[35.190,-0.630],
+  'annaba':[36.900,7.767], 'عنابة':[36.900,7.767], 'guelma':[36.462,7.427],
+  'constantine':[36.365,6.615], 'قسنطينة':[36.365,6.615], 'medea':[36.264,2.754],
+  'mostaganem':[35.935,0.089], 'msila':[35.706,4.541], 'mascara':[35.396,0.140],
+  'ouargla':[31.949,5.325], 'ورقلة':[31.949,5.325],
+  'oran':[35.691,-0.642], 'وهران':[35.691,-0.642],
+  'el bayadh':[33.683,1.017], 'illizi':[26.483,8.467], 'bordj bou arreridj':[36.073,4.761],
+  'boumerdes':[36.766,3.477], 'el tarf':[36.767,8.317], 'tindouf':[27.671,-8.147],
+  'tissemsilt':[35.607,1.811], 'el oued':[33.368,6.867], 'الوادي':[33.368,6.867],
+  'khenchela':[35.436,7.143], 'souk ahras':[36.286,7.951], 'tipaza':[36.589,2.447],
+  'mila':[36.450,6.264], 'ain defla':[36.264,1.966], 'naama':[33.266,-0.317],
+  'ain temouchent':[35.298,-1.140], 'ghardaia':[32.490,3.673], 'relizane':[35.737,0.556],
+  'timimoun':[29.263,0.231], 'touggourt':[33.108,6.059], 'djanet':[24.554,9.483],
+};
+function findAlgeriaCity(name){
+  const key = name.trim().toLowerCase();
+  if(ALGERIA_CITIES[key]) return ALGERIA_CITIES[key];
+  const found = Object.keys(ALGERIA_CITIES).find(k => k.includes(key) || key.includes(k));
+  return found ? ALGERIA_CITIES[found] : null;
+}
+
+let tickHandle = null;
+
+// --- Manual tuning (offsets in minutes vs the official "أذان الجزائر" app) ---
+const TUNE_PRAYERS = [
+  { key: 'Fajr',    ar: 'الفجر'  },
+  { key: 'Sunrise', ar: 'الشروق' },
+  { key: 'Dhuhr',   ar: 'الظهر'  },
+  { key: 'Asr',     ar: 'العصر'  },
+  { key: 'Maghrib', ar: 'المغرب' },
+  { key: 'Isha',    ar: 'العشاء' },
+];
+let tune = { Fajr:0, Sunrise:0, Dhuhr:0, Asr:0, Maghrib:0, Isha:0 };
+let lastQuery = null; // { type:'city', city, country } or { type:'coords', lat, lon }
+let lastSchedule = null;      // آخر جدول أوقات صلاة تم عرضه (لإعادة الجدولة عند تفعيل الإشعارات لاحقًا)
+let pendingNotifIds = [];     // معرّفات الإشعارات المجدولة حاليًا عبر Capacitor
+
+function buildTuneParam(){
+  // Official Aladhan order: Imsak,Fajr,Sunrise,Dhuhr,Asr,Maghrib,Sunset,Isha,Midnight
+  return ['0', tune.Fajr, tune.Sunrise, tune.Dhuhr, tune.Asr, tune.Maghrib, '0', tune.Isha, '0'].join(',');
+}
+
+function buildTuneGrid(){
+  const grid = document.getElementById('tuneGrid');
+  if(!grid) return;
+  grid.innerHTML = TUNE_PRAYERS.map(p => `
+    <div class="tune-field">
+      <label>${p.ar} (بالدقائق)</label>
+      <div class="stepper">
+        <button type="button" data-key="${p.key}" data-dir="1" aria-label="${p.ar}: زيادة">+</button>
+        <input type="number" step="1" id="tune-${p.key}" value="${tune[p.key]}" aria-label="${p.ar} بالدقائق">
+        <button type="button" data-key="${p.key}" data-dir="-1" aria-label="${p.ar}: نقصان">−</button>
+      </div>
+    </div>
+  `).join('');
+
+  grid.querySelectorAll('.stepper button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const key = btn.dataset.key;
+      const dir = Number(btn.dataset.dir);
+      const input = document.getElementById('tune-' + key);
+      if(input) input.value = (Number(input.value)||0) + dir;
+    });
+  });
+}
+buildTuneGrid();
+
+function setSettingsOpen(open){
+  const panel = document.getElementById('settingsPanel');
+  if(!panel) return;
+  panel.classList.toggle('open', open);
+  settingsBtn.classList.toggle('open', open);
+  settingsBtn.setAttribute('aria-expanded', String(open));
+  if(open){
+    document.body.style.overflow = 'hidden';
+  }else{
+    document.body.style.overflow = '';
+  }
+}
+
+if(settingsBtn){
+  settingsBtn.addEventListener('click', ()=>{
+    const panel = document.getElementById('settingsPanel');
+    const isOpen = panel.classList.contains('open');
+    setSettingsOpen(!isOpen);
+  });
+}
+
+const settingsClose = document.getElementById('settingsClose');
+if(settingsClose){
+  settingsClose.addEventListener('click', ()=> setSettingsOpen(false));
+}
+
+document.addEventListener('keydown', (e)=>{
+  if(e.key === 'Escape') setSettingsOpen(false);
+});
+
+/* =========================================================================
+   التنبيهات (Notifications) والأذان الصوتي (Audio) — ميزتان مستقلتان تمامًا،
+   كل واحدة لها مفتاح تشغيل خاص بها ولا تعتمد إحداهما على الأخرى.
+   ========================================================================= */
+const hasCapacitor = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+const LN = hasCapacitor ? window.Capacitor.Plugins.LocalNotifications : null;
+let notifyEnabled = false;
+let adhanEnabled = false;
+let adhanObjectURL = null;
+const firedAlerts = new Set(); // يمنع تكرار نفس التنبيه لنفس الصلاة في نفس اليوم
+
+const notifToggle = document.getElementById('notifToggle');
+const adhanToggle = document.getElementById('adhanToggle');
+const adhanSub    = document.getElementById('adhanSub');
+const adhanFile   = document.getElementById('adhanFile');
+const adhanFileName = document.getElementById('adhanFileName');
+const adhanTest   = document.getElementById('adhanTest');
+
+if(notifToggle){
+  notifToggle.addEventListener('change', async ()=>{
+    if(notifToggle.checked){
+      if(hasCapacitor){
+        const res = await LN.requestPermissions();
+        if(res.display !== 'granted'){
+          notifToggle.checked = false;
+          notifyEnabled = false;
+          return;
+        }
+      }else{
+        if(!('Notification' in window)){
+          alert('هذا المتصفح لا يدعم الإشعارات.');
+          notifToggle.checked = false;
+          return;
+        }
+        const perm = await Notification.requestPermission();
+        if(perm !== 'granted'){
+          notifToggle.checked = false;
+          notifyEnabled = false;
+          return;
+        }
+      }
+    }else if(hasCapacitor){
+      await LN.cancel({ notifications: pendingNotifIds.map(id => ({ id })) });
+      pendingNotifIds = [];
+    }
+    notifyEnabled = notifToggle.checked;
+    if(notifyEnabled && hasCapacitor && lastSchedule) scheduleNativeNotifications(lastSchedule);
+  });
+}
+
+if(adhanToggle){
+  adhanToggle.addEventListener('change', ()=>{
+    adhanEnabled = adhanToggle.checked;
+    adhanSub.classList.toggle('open', adhanEnabled);
+  });
+}
+
+if(adhanFile){
+  adhanFile.addEventListener('change', ()=>{
+    const f = adhanFile.files && adhanFile.files[0];
+    if(!f) return;
+    if(adhanObjectURL) URL.revokeObjectURL(adhanObjectURL);
+    adhanObjectURL = URL.createObjectURL(f);
+    adhanFileName.textContent = '✓ ' + f.name;
+  });
+}
+
+// نغمة تنبيه بسيطة مُولَّدة برمجيًا (Web Audio API) — تُستخدم عند عدم اختيار ملف صوتي
+function playChime(){
+  try{
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const notes = [880, 1108, 1318]; // A5, C#6, E6 — نغمة صاعدة لطيفة
+    notes.forEach((freq, i)=>{
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      const start = ctx.currentTime + i*0.22;
+      gain.gain.setValueAtTime(0.0001, start);
+      gain.gain.exponentialRampToValueAtTime(0.25, start + 0.05);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.55);
+      osc.connect(gain).connect(ctx.destination);
+      osc.start(start);
+      osc.stop(start + 0.6);
+    });
+  }catch(e){ /* Web Audio غير متاح — تجاهل بصمت */ }
+}
+
+function playAdhanSound(){
+  if(adhanObjectURL){
+    const audio = new Audio(adhanObjectURL);
+    audio.play().catch(()=> playChime());
+  }else{
+    playChime();
+  }
+}
+
+if(adhanTest){
+  adhanTest.addEventListener('click', playAdhanSound);
+}
+
+function sendPrayerNotification(prayerAr, timeStr){
+  if(!notifyEnabled || !('Notification' in window) || Notification.permission !== 'granted') return;
+  try{
+    new Notification('حان وقت ' + prayerAr, { body: 'الساعة ' + timeStr, tag: 'prayer-' + prayerAr });
+  }catch(e){ /* بعض المتصفحات على الجوال تمنع الإنشاء المباشر — تجاهل بصمت */ }
+}
+
+function checkPrayerAlerts(schedule, now){
+  const dayKey = now.toDateString();
+  schedule.forEach(p=>{
+    if(p.key === 'Sunrise') return; // الشروق ليس وقت صلاة يستدعي أذانًا أو تنبيهًا
+    const alertKey = dayKey + '-' + p.key;
+    const diff = now - p.date;
+    if(diff >= 0 && diff < 1200 && !firedAlerts.has(alertKey)){
+      firedAlerts.add(alertKey);
+      if(notifyEnabled) sendPrayerNotification(p.ar, fmtTime(p.date));
+      if(adhanEnabled) playAdhanSound();
+    }
+  });
+}
+
+// جدولة إشعارات حقيقية عبر نظام أندرويد — تُسلَّم حتى لو أُغلق التطبيق كليًا.
+// عكس checkPrayerAlerts (التي تتحقق كل ثانية وتعمل فقط والتطبيق مفتوح)، هذه الدالة
+// تُسجَّل مرة واحدة عند كل تحديث للمواقيت، وتترك تسليم الإشعار لنظام التشغيل نفسه.
+async function scheduleNativeNotifications(schedule){
+  if(!hasCapacitor || !LN) return;
+  if(pendingNotifIds.length){
+    await LN.cancel({ notifications: pendingNotifIds.map(id => ({ id })) });
+    pendingNotifIds = [];
+  }
+  if(!notifyEnabled) return;
+
+  const now = new Date();
+  const notifications = schedule
+    .filter(p => p.key !== 'Sunrise' && p.date > now)
+    .map((p, i) => ({
+      id: Number(now.toDateString().length + '' + i) || (i+1), // معرّف رقمي بسيط وفريد لهذا اليوم
+      title: 'حان وقت ' + p.ar,
+      body: 'الساعة ' + fmtTime(p.date),
+      schedule: { at: p.date },
+      sound: null, // الصوت الافتراضي للنظام؛ صوت الأذان المخصص يعمل فقط والتطبيق مفتوح (راجع القسم 7)
+    }));
+
+  if(notifications.length){
+    await LN.schedule({ notifications });
+    pendingNotifIds = notifications.map(n => n.id);
+  }
+}
+
+const tuneApply = document.getElementById('tuneApply');
+if(tuneApply) tuneApply.addEventListener('click', ()=>{
+  TUNE_PRAYERS.forEach(p=>{
+    tune[p.key] = Number(document.getElementById('tune-' + p.key).value) || 0;
+  });
+  if(lastQuery){
+    if(lastQuery.type === 'city') fetchByCity(lastQuery.city, lastQuery.country);
+    else fetchByCoords(lastQuery.lat, lastQuery.lon);
+  }
+});
+
+const tuneResetEl = document.getElementById('tuneReset');
+if(tuneResetEl) tuneResetEl.addEventListener('click', ()=>{
+  TUNE_PRAYERS.forEach(p=> tune[p.key] = 0);
+  buildTuneGrid();
+  if(lastQuery){
+    if(lastQuery.type === 'city') fetchByCity(lastQuery.city, lastQuery.country);
+    else fetchByCoords(lastQuery.lat, lastQuery.lon);
+  }
+});
+
+function toDate(hhmm){
+  const [h,m] = hhmm.split(':').map(Number);
+  const d = new Date();
+  d.setHours(h, m, 0, 0);
+  return d;
+}
+
+function fmtCountdown(ms){
+  if(ms < 0) ms = 0;
+  const totalSec = Math.floor(ms/1000);
+  const h = String(Math.floor(totalSec/3600)).padStart(2,'0');
+  const m = String(Math.floor((totalSec%3600)/60)).padStart(2,'0');
+  const s = String(totalSec%60).padStart(2,'0');
+  return (h + ':' + m + ':' + s);
+}
+
+function fmtTime(date){
+  return String(date.getHours()).padStart(2,'0') + ':' + String(date.getMinutes()).padStart(2,'0');
+}
+
+let els = {}; // element refs for the live update loop
+
+function render(data, placeLabel, source){
+  source = source || 'online';
+  const timings = data.timings;
+  const hijri = data.date.hijri;
+  const greg  = data.date.gregorian;
+  const hijriStr = hijri.weekday.ar + '، ' + hijri.day + ' ' + hijri.month.ar + ' ' + hijri.year + ' هـ';
+  const gregStr  = greg.weekday.en + '، ' + greg.day + ' ' + greg.month.en + ' ' + greg.year;
+
+  const schedule = PRAYERS.map(p => ({ ...p, date: toDate(timings[p.key]) }));
+
+  contentEl.innerHTML = `
+    <div class="hero">
+      <div class="hero-city">${placeLabel}
+        <span class="src-badge ${source === 'offline' ? 'offline' : 'online'}">
+          ${source === 'offline' ? '🔌 حساب محلي بدون إنترنت' : '☁️ Aladhan API'}
+        </span>
+      </div>
+      <div class="hero-meta">
+        <span class="clock-chip" id="liveClock">--:--:-- <span>الآن</span></span>
+        <span class="hero-date">${gregStr}</span>
+        <span class="hero-hijri">${hijriStr}</span>
+      </div>
+      <div class="hero-next-label"><i></i>الصلاة القادمة<i></i></div>
+      <div class="hero-next-name" id="nextName" aria-live="polite">—</div>
+      <div class="hero-next-time" id="nextTime"></div>
+      <div class="hero-countdown" id="countdown" role="timer">--:--:--<small>متبقٍ</small></div>
+    </div>
+
+    <div class="grid">
+      ${schedule.map(p => `
+        <div class="card" data-key="${p.key}" ${p.key === 'Sunrise' ? 'title="طلوع الشمس"' : ''}>
+          <div class="pname">${p.ar}</div>
+          <div class="ptime">${timings[p.key]}</div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+
+  els.liveClock = document.getElementById('liveClock');
+  els.nextName  = document.getElementById('nextName');
+  els.nextTime  = document.getElementById('nextTime');
+  els.countdown = document.getElementById('countdown');
+  els.cards     = contentEl.querySelectorAll('.card');
+
+  if(tickHandle) clearInterval(tickHandle);
+
+  function update(){
+    const now = new Date();
+
+    // Live clock
+    if(els.liveClock){
+      els.liveClock.childNodes[0].nodeValue = fmtTime(now) + ':' + String(now.getSeconds()).padStart(2,'0');
+    }
+
+    // Next prayer (Sunrise is not a worship prayer for countdown purposes)
+    let next = schedule.find(p => p.key !== 'Sunrise' && p.date > now);
+    const isTomorrow = !next;
+    if(isTomorrow){
+      const fajrTomorrow = toDate(timings.Fajr);
+      fajrTomorrow.setDate(fajrTomorrow.getDate()+1);
+      next = { ar: 'الفجر', date: fajrTomorrow, key: 'Fajr' };
+    }
+
+    if(els.nextName.textContent !== next.ar) els.nextName.textContent = next.ar;
+    if(els.nextTime.textContent !== 'الساعة ' + fmtTime(next.date)) els.nextTime.textContent = 'الساعة ' + fmtTime(next.date);
+    els.countdown.childNodes[0].nodeValue = fmtCountdown(next.date - now);
+
+    checkPrayerAlerts(schedule, now);
+
+    // Card states
+    els.cards.forEach(c=>{
+      const key = c.dataset.key;
+      const isPast = key !== 'Sunrise' && schedule.find(p=>p.key===key).date <= now;
+      c.classList.toggle('past', isPast && !(isTomorrow && key === 'Fajr'));
+      c.classList.toggle('active', key === next.key);
+      });
+  }
+
+  lastSchedule = schedule;
+  if(hasCapacitor && notifyEnabled) scheduleNativeNotifications(schedule);
+
+  update();
+  tickHandle = setInterval(update, 1000);
+}
+
+function showError(msg){
+  contentEl.innerHTML = `<div class="state err">${msg}</div>`;
+}
+
+async function fetchWithTimeout(url, ms){
+  const ctrl = new AbortController();
+  const t = setTimeout(()=>ctrl.abort(), ms);
+  try{
+    const res = await fetch(url, { signal: ctrl.signal });
+    return res;
+  } finally {
+    clearTimeout(t);
+  }
+}
+
+async function fetchByCity(city, country){
+  lastQuery = { type:'city', city, country };
+  contentEl.innerHTML = `<div class="state">جارٍ تحميل مواقيت الصلاة في ${city}…</div>`;
+  try{
+    const url = 'https://api.aladhan.com/v1/timingsByCity?city=' + encodeURIComponent(city)
+      + '&country=' + encodeURIComponent(country||'Algeria') + '&method=19&tune=' + buildTuneParam();
+    const res = await fetchWithTimeout(url, 6000);
+    const json = await res.json();
+    if(json.code !== 200) throw new Error('city_not_found');
+    render(json.data, `${city}${country ? ', ' + country : ''}`, 'online');
+  }catch(e){
+    // لا إنترنت أو تعذّر الوصول للخادم — نحاول الحساب المحلي إن كانت المدينة معروفة
+    const coords = findAlgeriaCity(city);
+    if(coords){
+      const data = computeLocalData(new Date(), coords[0], coords[1], city);
+      render(data, `${city}${country ? ', ' + country : ''}`, 'offline');
+    }else{
+      showError('لا يوجد اتصال بالإنترنت، ولم أتعرّف على هذه المدينة في القائمة المحلية. جرّب مدينة جزائرية معروفة أو زر "موقعي الحالي".');
+    }
+  }
+}
+
+async function fetchByCoords(lat, lon){
+  lastQuery = { type:'coords', lat, lon };
+  contentEl.innerHTML = `<div class="state">جارٍ تحديد مواقيت الصلاة حسب موقعك…</div>`;
+  try{
+    const url = 'https://api.aladhan.com/v1/timings?latitude=' + lat
+      + '&longitude=' + lon + '&method=19&tune=' + buildTuneParam();
+    const res = await fetchWithTimeout(url, 6000);
+    const json = await res.json();
+    if(json.code !== 200) throw new Error('coords_failed');
+    render(json.data, 'موقعك الحالي', 'online');
+  }catch(e){
+    // بدون إنترنت لكن الإحداثيات متوفرة من GPS الجهاز — نحسب محليًا مباشرة
+    const data = computeLocalData(new Date(), lat, lon);
+    render(data, 'موقعك الحالي', 'offline');
+  }
+}
+
+const searchBtn = document.getElementById('searchBtn');
+if(searchBtn){
+  searchBtn.addEventListener('click', ()=>{
+    const val = cityInput.value.trim();
+    if(!val) return;
+    fetchByCity(val, 'Algeria');
+  });
+}
+cityInput.addEventListener('keydown', (e)=>{
+  if(e.key === 'Enter' && searchBtn) searchBtn.click();
+});
+
+const geoBtn = document.getElementById('geoBtn');
+if(geoBtn){
+  geoBtn.addEventListener('click', ()=>{
+    if(!navigator.geolocation){
+      showError('المتصفح لا يدعم تحديد الموقع.');
+      return;
+    }
+    contentEl.innerHTML = `<div class="state">جارٍ طلب إذن الموقع…</div>`;
+    navigator.geolocation.getCurrentPosition(
+      pos => fetchByCoords(pos.coords.latitude, pos.coords.longitude),
+      () => showError('تم رفض إذن الموقع. جرّب البحث باسم المدينة بدلاً من ذلك.')
+    );
+  });
+}
+
+// Default: Oran, Algeria
+fetchByCity('Oran', 'Algeria');
+</script>
+
+
+</body></html>

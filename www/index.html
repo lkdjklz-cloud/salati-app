@@ -390,6 +390,113 @@
   .card.active .pname{ color: var(--gold-soft); font-weight:700; }
   .card.active .ptime{ color: var(--sand-2); }
 
+  /* ─── Prayer-card flip (checklist) ─── */
+  .card-flip{ perspective:1200px; cursor:pointer; }
+  .card-flip .card-inner{
+    position:relative; width:100%; transform-style:preserve-3d;
+    transition: transform .5s ease;
+  }
+  .card-flip.flipped .card-inner{ transform: rotateY(180deg); }
+  .card-front, .card-back{
+    backface-visibility:hidden; -webkit-backface-visibility:hidden;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+  }
+  .card-back{
+    position:absolute; inset:0; transform: rotateY(180deg);
+    padding:12px 10px; gap:10px; overflow:hidden;
+  }
+  .card-back .cb-title{ font-family:'Amiri', serif; font-size:19px; color:var(--gold-soft); line-height:1.2; }
+  .cb-q{ font-size:12.5px; color:var(--sand); line-height:1.5; margin:6px 0 0; }
+  .cb-answers{ display:flex; gap:8px; margin-top:7px; width:100%; }
+  .cb-answers button{
+    flex:1; padding:8px 6px; border-radius:999px; border:1px solid var(--line);
+    background:var(--surface-2); color:var(--sand);
+    font-family:'Tajawal',system-ui,sans-serif; font-size:13px; cursor:pointer;
+  }
+  .cb-answers button.yes.selected{ background:rgba(80,190,120,.18); border-color:rgba(110,220,150,.55); color:#9CE8B5; }
+  .cb-answers button.no.selected{ background:rgba(232,153,138,.16); border-color:rgba(232,153,138,.55); color:var(--danger); }
+  .cb-close{ margin-top:8px; font-size:12px; color:var(--muted); background:none; border:none; cursor:pointer; text-decoration:underline; }
+  .card .pname{ display:flex; align-items:center; justify-content:center; gap:4px; }
+  .pray-status{ font-size:15px; line-height:1; }
+  .pray-status.ok{ color:#8FD8A4; }
+  .pray-status.no{ color:var(--danger); }
+  .pray-status.part{ color:var(--gold-soft); }
+
+  .pray-progress{ margin:16px 0 2px; font-size:13px; color:var(--muted); text-align:center; }
+  .pray-progress b{ color:var(--gold-soft); }
+
+  /* ─── Quick boxes (editor / history) ─── */
+  .quick-boxes{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:18px; }
+  .quick-box{
+    border:1px solid var(--line); border-radius:var(--r); padding:15px 12px;
+    background:var(--surface); color:var(--sand); cursor:pointer; text-align:center;
+    font-family:'Tajawal',system-ui,sans-serif; font-size:14px; line-height:1.6;
+    transition:border-color .25s ease, background .25s ease, transform .2s ease;
+  }
+  .quick-box:hover{ border-color:rgba(201,162,39,.45); background:var(--surface-2); }
+  .quick-box:active{ transform:scale(.97); }
+  .quick-box small{ display:block; color:var(--faint); font-size:11.5px; margin-top:4px; }
+
+  /* ─── Wilaya list ─── */
+  .wilaya-list{
+    width:100%; max-height:280px; overflow-y:auto; display:grid; gap:6px;
+    border:1px solid var(--line); border-radius:16px; padding:10px; background:var(--surface);
+  }
+  .wilaya-item{
+    display:flex; align-items:center; gap:10px; width:100%;
+    background:var(--surface-2); color:var(--sand);
+    border:1px solid transparent; border-radius:12px; padding:8px 11px;
+    font-family:'Tajawal',system-ui,sans-serif; font-size:13.5px; cursor:pointer;
+    transition:border-color .2s ease, background .2s ease;
+  }
+  .wilaya-item .wnum{
+    min-width:30px; height:26px; display:inline-flex; align-items:center; justify-content:center;
+    border-radius:8px; background:rgba(201,162,39,.14); color:var(--gold-soft); font-weight:700; font-size:11.5px;
+  }
+  .wilaya-item:hover{ border-color:rgba(201,162,39,.35); }
+  .wilaya-item.selected{ border-color:rgba(201,162,39,.6); background:rgba(201,162,39,.1); }
+  .wilaya-item .wcheck{ margin-inline-start:auto; color:var(--gold); font-weight:700; }
+  .wilaya-item.geo{ justify-content:center; color:var(--gold-soft); border-style:dashed; }
+
+  /* ─── Checklist history ─── */
+  .hist-scroll{ max-height:260px; overflow-y:auto; }
+  .hist-table{ width:100%; border-collapse:collapse; font-size:12.5px; }
+  .hist-table th, .hist-table td{ padding:7px 5px; text-align:center; border-bottom:1px solid var(--line-soft); }
+  .hist-table th{ color:var(--muted); font-weight:500; }
+  .hist-table td.hok{ color:#8FD8A4; }
+  .hist-table td.hno{ color:var(--danger); }
+  .hist-table td.hna{ color:var(--faint); }
+
+  /* ─── Question editor ─── */
+  .qedit-nav{ display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px; }
+  .qedit-nav button{
+    padding:6px 12px; border-radius:999px; border:1px solid var(--line); background:var(--surface-2);
+    color:var(--sand); font-family:'Tajawal',system-ui,sans-serif; font-size:12.5px; cursor:pointer;
+  }
+  .qedit-nav button.active{ border-color:rgba(201,162,39,.6); color:var(--gold-soft); background:rgba(201,162,39,.1); }
+  .qedit-row{ display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+  .qedit-row input{
+    flex:1; background:var(--surface-2); color:var(--sand); border:1px solid var(--line);
+    border-radius:10px; padding:9px 10px; font-size:13px; font-family:'Tajawal',system-ui,sans-serif;
+  }
+  .qedit-row button{
+    border:1px solid var(--line); background:var(--surface-2); color:var(--gold-soft);
+    border-radius:10px; padding:8px 10px; font-size:12.5px; cursor:pointer; font-family:'Tajawal',system-ui,sans-serif;
+  }
+  .qedit-row button.del{ color:var(--danger); }
+  .qedit-add{ margin-top:10px; display:flex; gap:8px; }
+  .qedit-add input{
+    flex:1; background:var(--surface-2); color:var(--sand); border:1px solid var(--line);
+    border-radius:10px; padding:9px 10px; font-size:13px; font-family:'Tajawal',system-ui,sans-serif;
+  }
+  .qedit-add button{
+    border:1px solid rgba(201,162,39,.5); background:rgba(201,162,39,.12); color:var(--gold-soft);
+    border-radius:10px; padding:9px 14px; cursor:pointer; font-family:'Tajawal',system-ui,sans-serif;
+  }
+  .qedit-reset{ margin-top:14px; border:1px solid var(--line); background:none; color:var(--muted); border-radius:10px; padding:8px 12px; font-size:12.5px; cursor:pointer; font-family:'Tajawal',system-ui,sans-serif; }
+  .flash-hl{ animation: flashHl 1.6s ease; }
+  @keyframes flashHl{ 0%,55%{ box-shadow: 0 0 0 2px rgba(201,162,39,.7); background:rgba(201,162,39,.08);} 100%{ box-shadow:none; } }
+
 
 
   .state{ text-align:center; padding: 48px 0; color: var(--muted); font-size:14px; }
@@ -466,12 +573,8 @@
   <div class="sh-body">
     <section class="settings-sec loc-sec">
       <h3>المدينة والموقع</h3>
-      <p>اختر مدينة في الجزائر، أو استخدم موقعك الحالي لتحديد المواقيت تلقائيًا. يجري استخدام الحساب المحلي عند انقطاع الإنترنت.</p>
-      <div class="locbox">
-      <input id="cityInput" type="text" placeholder="اسم المدينة (مثال: وهران)" aria-label="اسم المدينة">
-        
-        <button id="searchBtn" class="primary">بحث</button>
-      </div>
+      <p>اختر ولايتك من القائمة (69 ولاية)، أو استخدم موقعك الحالي لتحديد المواقيت تلقائيًا. يجري استخدام الحساب المحلي عند انقطاع الإنترنت.</p>
+      <div class="wilaya-list" id="wilayaList"></div>
     </section>
 
     <section class="settings-sec">
@@ -486,12 +589,12 @@
 
     <section class="settings-sec">
       <h3>التنبيهات والأذان</h3>
-      <p>فعّل أيًا منهما بشكل مستقل: تنبيه مرئي على الجهاز عند دخول وقت الصلاة، و/أو صوت أذان يُشغَّل تلقائيًا.</p>
+      <p>فعّل أيًا منهما بشكل مستقل: تذكير قبل الصلاة + إشعار عند دخول الوقت (يعمل في الخلفية حتى مع إغلاق التطبيق)، و/أو صوت أذان.</p>
 
       <div class="toggle-row">
         <div class="tr-text">
           <strong>🔔 الإشعارات</strong>
-          <span>تنبيه من المتصفح عند دخول كل وقت صلاة. يعمل فقط أثناء فتح هذه الصفحة.</span>
+          <span>تذكير قبل كل صلاة بـ 5 دقائق، وإشعار عند دخول الوقت — يعملان حتى مع إغلاق التطبيق كليًا.</span>
         </div>
         <label class="switch">
           <input type="checkbox" id="notifToggle">
@@ -502,7 +605,7 @@
       <div class="toggle-row">
         <div class="tr-text">
           <strong>🔊 الأذان الصوتي</strong>
-          <span>تشغيل صوت تلقائيًا عند دخول وقت الصلاة.</span>
+          <span>تشغيل صوت تلقائيًا عند دخول وقت الصلاة أثناء استخدام التطبيق. في الخلفية، يصدر صوت الإشعار نفسه (يُستعمل ملف أذان جاهز مضمّن).</span>
         </div>
         <label class="switch">
           <input type="checkbox" id="adhanToggle">
@@ -519,10 +622,28 @@
           <span class="filename" id="adhanFileName">لم يُختار ملف — سيُستخدم صوت تنبيه بسيط بدلاً منه</span>
           <button type="button" class="testbtn" id="adhanTest">▶ تجربة الصوت</button>
         </div>
-        <div class="notif-hint">لأسباب حقوقية لا تتضمن اللوحة تسجيل أذان جاهزًا؛ يمكنك اختيار ملف صوتي تملكه من جهازك. بدون اختيار ملف، تُشغَّل نغمة تنبيه بسيطة فقط.</div>
+        <div class="notif-hint">الملف يُحفظ داخل التطبيق ويبقى بعد إعادة التشغيل. بدون اختيار ملف، تُشغَّل نغمة تنبيه بسيطة أثناء الاستخدام، وصوت أذان مضمّن في إشعار الخلفية.</div>
       </div>
 
-      <div class="notif-hint">ملاحظة: الإشعارات والصوت يعملان فقط طالما الصفحة مفتوحة في المتصفح على هذا الجهاز — وليس كتطبيق يعمل في الخلفية.</div>
+      <div class="notif-hint">في تطبيق أندرويد: الإشعاران (التذكير + الأذان) يُسلَّمان بنظام التشغيل حتى لو أُغلق التطبيق. تأكد من إبقاء "المُنبِّهات الدقيقة" و"استخدام بيانات الخلفية" مفعّلة في إعدادات النظام.</div>
+    </section>
+
+    <section class="settings-sec" id="qEditorSec">
+      <h3>📝 تخصيص أسئلة الصلاة</h3>
+      <p>اضغط على بطاقة أي صلاة لتقلبها وترى سؤالها، وأجب بنعم/لا ليتتبّع التطبيق صلواتك اليومية. هنا يمكنك إضافة أو تعديل أو حذف أسئلة لكل صلاة على حدة.</p>
+      <div class="qedit-nav" id="qeditNav"></div>
+      <div id="qeditList"></div>
+      <div class="qedit-add">
+        <input type="text" id="qeditNew" placeholder="سؤال جديد…" aria-label="سؤال جديد">
+        <button type="button" id="qeditAddBtn">إضافة</button>
+      </div>
+      <button type="button" class="qedit-reset" id="qeditReset">↺ إعادة الصلاة إلى السؤال الافتراضي</button>
+    </section>
+
+    <section class="settings-sec" id="historySec">
+      <h3>📅 سجل الصلاة</h3>
+      <p>إجابات الأيام السبعة الأخيرة — تُحذف السجلات تلقائيًا بعد 30 يومًا.</p>
+      <div class="hist-scroll"><table class="hist-table" id="histTable"></table></div>
     </section>
   </div>
 </div>
@@ -537,7 +658,6 @@ const PRAYERS = [
   { key: 'Isha',    ar: 'العشاء'  },
 ];
 const contentEl = document.getElementById('content');
-const cityInput = document.getElementById('cityInput');
 const settingsBtn = document.getElementById('settingsBtn');
 
 /* =========================================================================
@@ -676,38 +796,6 @@ function computeLocalData(date, lat, lon, cityLabel){
   };
 }
 
-// Small table of Algerian wilaya capitals + a few major cities for offline
-// city search (used only when the API is unreachable). [lat, lon]
-const ALGERIA_CITIES = {
-  'adrar':[27.87,-0.29], 'chlef':[36.165,1.335], 'laghouat':[33.80,2.865],
-  'oum el bouaghi':[35.87,7.11], 'batna':[35.555,6.174], 'bejaia':[36.75,5.083], 'بجاية':[36.75,5.083],
-  'biskra':[34.85,5.728], 'bechar':[31.615,-2.218], 'blida':[36.470,2.828], 'البليدة':[36.470,2.828],
-  'bouira':[36.373,3.902], 'tamanrasset':[22.785,5.522], 'tebessa':[35.404,8.124],
-  'tlemcen':[34.878,-1.315], 'تلمسان':[34.878,-1.315], 'tiaret':[35.371,1.317],
-  'tizi ouzou':[36.712,4.045], 'تيزي وزو':[36.712,4.045],
-  'alger':[36.752,3.042], 'algiers':[36.752,3.042], 'الجزائر':[36.752,3.042],
-  'djelfa':[34.673,3.263], 'jijel':[36.822,5.766], 'setif':[36.190,5.408], 'سطيف':[36.190,5.408],
-  'saida':[34.830,0.151], 'skikda':[36.876,6.909], 'sidi bel abbes':[35.190,-0.630],
-  'annaba':[36.900,7.767], 'عنابة':[36.900,7.767], 'guelma':[36.462,7.427],
-  'constantine':[36.365,6.615], 'قسنطينة':[36.365,6.615], 'medea':[36.264,2.754],
-  'mostaganem':[35.935,0.089], 'msila':[35.706,4.541], 'mascara':[35.396,0.140],
-  'ouargla':[31.949,5.325], 'ورقلة':[31.949,5.325],
-  'oran':[35.691,-0.642], 'وهران':[35.691,-0.642],
-  'el bayadh':[33.683,1.017], 'illizi':[26.483,8.467], 'bordj bou arreridj':[36.073,4.761],
-  'boumerdes':[36.766,3.477], 'el tarf':[36.767,8.317], 'tindouf':[27.671,-8.147],
-  'tissemsilt':[35.607,1.811], 'el oued':[33.368,6.867], 'الوادي':[33.368,6.867],
-  'khenchela':[35.436,7.143], 'souk ahras':[36.286,7.951], 'tipaza':[36.589,2.447],
-  'mila':[36.450,6.264], 'ain defla':[36.264,1.966], 'naama':[33.266,-0.317],
-  'ain temouchent':[35.298,-1.140], 'ghardaia':[32.490,3.673], 'relizane':[35.737,0.556],
-  'timimoun':[29.263,0.231], 'touggourt':[33.108,6.059], 'djanet':[24.554,9.483],
-};
-function findAlgeriaCity(name){
-  const key = name.trim().toLowerCase();
-  if(ALGERIA_CITIES[key]) return ALGERIA_CITIES[key];
-  const found = Object.keys(ALGERIA_CITIES).find(k => k.includes(key) || key.includes(k));
-  return found ? ALGERIA_CITIES[found] : null;
-}
-
 let tickHandle = null;
 
 // --- Manual tuning (offsets in minutes vs the official "أذان الجزائر" app) ---
@@ -795,6 +883,117 @@ let adhanEnabled = false;
 let adhanObjectURL = null;
 const firedAlerts = new Set(); // يمنع تكرار نفس التنبيه لنفس الصلاة في نفس اليوم
 
+const FS = hasCapacitor && window.Capacitor.Plugins.Filesystem ? window.Capacitor.Plugins.Filesystem : null;
+
+/* ── تخزين بسيط (localStorage مع تغطية للأخطاء) ── */
+function lsGet(key, dflt){
+  try{
+    const raw = localStorage.getItem(key);
+    if(raw === null) return dflt;
+    return JSON.parse(raw);
+  }catch(e){ return dflt; }
+}
+function lsSet(key, val){
+  try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){}
+}
+function esc(s){
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+/* ── بيانات قائمة الولايات (69 ولاية) ── */
+const W = (num, ar, fr, city, lat, lon) => ({ num, ar, fr, city, lat, lon });
+const ALGERIA_WILAYAS = [
+  W(1,'أدرار','Adrar','adrar',27.874,-0.294), W(2,'الشلف','Chlef','chlef',36.165,1.335),
+  W(3,'الأغواط','Laghouat','laghouat',33.800,2.865), W(4,'أم البواقي','Oum El Bouaghi','oum-el-bouaghi',35.878,7.113),
+  W(5,'باتنة','Batna','batna',35.556,6.174), W(6,'بجاية','Béjaïa','bejaia',36.751,5.056),
+  W(7,'بسكرة','Biskra','biskra',34.850,5.735), W(8,'بشار','Béchar','bechar',31.616,-2.220),
+  W(9,'البليدة','Blida','blida',36.470,2.827), W(10,'البويرة','Bouira','bouira',36.373,3.902),
+  W(11,'تمنراست','Tamanrasset','tamanrasset',22.785,5.523), W(12,'تبسة','Tébessa','tebessa',35.404,8.124),
+  W(13,'تلمسان','Tlemcen','tlemcen',34.882,-1.317), W(14,'تيارت','Tiaret','tiaret',35.371,1.317),
+  W(15,'تيزي وزو','Tizi Ouzou','tizi-ouzou',36.712,4.046), W(16,'الجزائر','Alger','algiers',36.753,3.058),
+  W(17,'الجلفة','Djelfa','djelfa',34.672,3.263), W(18,'جيجل','Jijel','jijel',36.820,5.767),
+  W(19,'سطيف','Sétif','setif',36.190,5.410), W(20,'سعيدة','Saïda','saida',34.830,0.152),
+  W(21,'سكيكدة','Skikda','skikda',36.876,6.909), W(22,'سيدي بلعباس','Sidi Bel Abbès','sidi-bel-abbes',35.192,-0.630),
+  W(23,'عنابة','Annaba','annaba',36.900,7.766), W(24,'قالمة','Guelma','guelma',36.462,7.426),
+  W(25,'قسنطينة','Constantine','constantine',36.365,6.615), W(26,'المدية','Médéa','medea',36.264,2.754),
+  W(27,'مستغانم','Mostaganem','mostaganem',35.931,0.090), W(28,'المسيلة',"M'Sila",'msila',35.706,4.546),
+  W(29,'معسكر','Mascara','mascara',35.397,0.141), W(30,'ورقلة','Ouargla','ouargla',31.950,5.325),
+  W(31,'وهران','Oran','oran',35.699,-0.634), W(32,'البيض','El Bayadh','el-bayadh',33.683,1.019),
+  W(33,'إليزي','Illizi','illizi',26.483,8.467), W(34,'برج بوعريريج','Bordj Bou Arréridj','bordj-bou-arreridj',36.073,4.761),
+  W(35,'بومرداس','Boumerdès','boumerdes',36.766,3.477), W(36,'الطارف','El Tarf','el-tarf',36.767,8.314),
+  W(37,'تندوف','Tindouf','tindouf',27.674,-8.147), W(38,'تيسمسيلت','Tissemsilt','tissemsilt',35.607,1.811),
+  W(39,'الوادي','El Oued','el-oued',33.368,6.868), W(40,'خنشلة','Khenchela','khenchela',35.434,7.142),
+  W(41,'سوق أهراس','Souk Ahras','souk-ahras',36.286,7.951), W(42,'تيبازة','Tipaza','tipaza',36.589,2.448),
+  W(43,'ميلة','Mila','mila',36.450,6.265), W(44,'عين الدفلى','Aïn Defla','ain-deflya',36.264,1.968),
+  W(45,'النعامة','Naâma','naama',33.267,-0.315), W(46,'عين تموشنت','Aïn Témouchent','ain-temouchent',35.299,-1.140),
+  W(47,'غرداية','Ghardaïa','ghardaia',32.490,3.673), W(48,'غليزان','Relizane','relizane',35.738,0.556),
+  W(49,'تيميمون','Timimoun','timimoun',29.264,0.231), W(50,'برج باجي مختار','Bordj Badji Mokhtar','bordj-badji-mokhtar',21.329,0.958),
+  W(51,'أولاد جلال','Ouled Djellal','ouled-djellal',34.417,5.063), W(52,'بني عباس','Béni Abbès','beni-abbes',30.099,-2.172),
+  W(53,'عين صالح','In Salah','in-salah',27.194,2.486), W(54,'عين قزام','In Guezzam','in-guezzam',19.567,5.769),
+  W(55,'تقرت','Touggourt','touggourt',33.103,6.067), W(56,'جانت','Djanet','djanet',24.554,9.484),
+  W(57,'المغير',"El M'Ghair",'el-mghair',33.951,5.923), W(58,'المنيعة','El Meniaa','el-meniaa',30.578,2.882),
+  W(59,'آفلو','Aflou','aflou',34.113,2.102), W(60,'بريكة','Barika','barika',35.390,5.366),
+  W(61,'القنطرة','El Kantara','el-kantara',35.224,5.706), W(62,'بير العاتر','Bir El Ater','bir-el-ater',34.744,8.061),
+  W(63,'العريشة','El Aricha','el-aricha',34.231,-1.258), W(64,'قصر الشلالة','Ksar Chellala','ksar-chelalla',35.215,2.323),
+  W(65,'عين وسارة','Aïn Oussera','ain-oussara',35.450,2.905), W(66,'مسعد','Messaad','messaad',34.154,3.496),
+  W(67,'قصر البخاري','Ksar El Boukhari','ksar-el-boukhari',35.887,2.749), W(68,'بوسعادة','Boussaâda','boussaada',35.209,4.185),
+  W(69,'الأبيض سيدي الشيخ','El Abiodh Sidi Cheikh','el-abiodh-sid-cheikh',32.893,0.548)
+];
+function findAlgeriaCity(name){
+  const key = String(name).trim().toLowerCase();
+  const e = ALGERIA_WILAYAS.find(w => w.ar === key || w.fr.toLowerCase() === key || w.city.toLowerCase() === key);
+  return e ? [e.lat, e.lon] : null;
+}
+let savedWilaya = lsGet('salati.wilaya', { num:31, ar:'وهران', city:'Oran' });
+
+/* ── قائمة أسئلة الصلاة + سجل الإجابات (آخر 30 يومًا) ── */
+const DEFAULT_QUESTIONS = {
+  Fajr:    [{ id:'fajr', text:'هل صليت الفجر اليوم؟' }],
+  Dhuhr:   [{ id:'dhuhr', text:'هل صليت الظهر اليوم؟' }],
+  Asr:     [{ id:'asr', text:'هل صليت العصر اليوم؟' }],
+  Maghrib: [{ id:'maghrib', text:'هل صليت المغرب اليوم؟' }],
+  Isha:    [{ id:'isha', text:'هل صليت العشاء اليوم؟' }]
+};
+function defaultQuestions(key){ return JSON.parse(JSON.stringify((DEFAULT_QUESTIONS[key] || [{ id:key, text:'هل صليت هذه الصلاة اليوم؟' }]))); }
+function getQuestions(key){
+  return lsGet('salati.questions.' + key, null) || defaultQuestions(key);
+}
+function saveQuestions(key, questions){
+  const trimmed = questions.filter(q => q.text && String(q.text).trim());
+  if(!trimmed.length){ try{ localStorage.removeItem('salati.questions.' + key); }catch(e){} }
+  else{
+    try{ localStorage.setItem('salati.questions.' + key, JSON.stringify(trimmed)); }catch(e){}
+  }
+}
+function locDateKey(d){ return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
+function todayKey(){ return locDateKey(new Date()); }
+function cleanOldDays(){
+  try{
+    const cutoff = Date.now() - 30*24*60*60*1000;
+    for(let i=0; i<localStorage.length; i++){
+      const k = localStorage.key(i);
+      if(k && k.indexOf('salati.day.') === 0){
+        try{
+          if(new Date(k.slice(10)).getTime() < cutoff) localStorage.removeItem(k);
+        }catch(e){}
+      }
+    }
+  }catch(e){}
+}
+function getDay(key){
+  const day = lsGet('salati.day.' + key, null);
+  if(day && typeof day === 'object') return day;
+  return {};
+}
+function setAnswer(key, prayer, qid, val){
+  const day = getDay(key);
+  day[prayer] = day[prayer] || {};
+  day[prayer][qid] = val;
+  try{ localStorage.setItem('salati.day.' + key, JSON.stringify(day)); }catch(e){}
+  lsSet('salati.lastDay', key);
+  cleanOldDays();
+}
+
 const notifToggle = document.getElementById('notifToggle');
 const adhanToggle = document.getElementById('adhanToggle');
 const adhanSub    = document.getElementById('adhanSub');
@@ -810,6 +1009,7 @@ if(notifToggle){
         if(res.display !== 'granted'){
           notifToggle.checked = false;
           notifyEnabled = false;
+          lsSet('salati.notify', false);
           return;
         }
       }else{
@@ -822,6 +1022,7 @@ if(notifToggle){
         if(perm !== 'granted'){
           notifToggle.checked = false;
           notifyEnabled = false;
+          lsSet('salati.notify', false);
           return;
         }
       }
@@ -830,6 +1031,7 @@ if(notifToggle){
       pendingNotifIds = [];
     }
     notifyEnabled = notifToggle.checked;
+    lsSet('salati.notify', notifyEnabled);
     if(notifyEnabled && hasCapacitor && lastSchedule) scheduleNativeNotifications(lastSchedule);
   });
 }
@@ -838,17 +1040,60 @@ if(adhanToggle){
   adhanToggle.addEventListener('change', ()=>{
     adhanEnabled = adhanToggle.checked;
     adhanSub.classList.toggle('open', adhanEnabled);
+    lsSet('salati.adhan', adhanEnabled);
   });
 }
 
+function readFileDataURL(f){
+  return new Promise((res, rej)=>{
+    const r = new FileReader();
+    r.onload = () => res(String(r.result).split(',')[1]);
+    r.onerror = rej;
+    r.readAsDataURL(f);
+  });
+}
+async function restoreAdhanObjectURL(){
+  if(!hasCapacitor || !FS) return;
+  try{
+    const uri = await FS.getUri({ path:'adhan.mp3', directory:FS.Directory.Data });
+    if(adhanObjectURL) URL.revokeObjectURL(adhanObjectURL);
+    adhanObjectURL = window.Capacitor.convertFileSrc(uri.uri);
+    const name = lsGet('salati.adhanName', '');
+    if(adhanFileName && name) adhanFileName.textContent = '✓ ' + name;
+  }catch(e){ /* لا يوجد ملف محفوظ بعد */ }
+}
+
 if(adhanFile){
-  adhanFile.addEventListener('change', ()=>{
+  adhanFile.addEventListener('change', async ()=>{
     const f = adhanFile.files && adhanFile.files[0];
     if(!f) return;
-    if(adhanObjectURL) URL.revokeObjectURL(adhanObjectURL);
-    adhanObjectURL = URL.createObjectURL(f);
+    if(hasCapacitor && FS){
+      try{
+        const b64 = await readFileDataURL(f);
+        await FS.writeFile({ path:'adhan.mp3', data:b64, directory:FS.Directory.Data, recursive:true });
+        const uri = await FS.getUri({ path:'adhan.mp3', directory:FS.Directory.Data });
+        if(adhanObjectURL) URL.revokeObjectURL(adhanObjectURL);
+        adhanObjectURL = window.Capacitor.convertFileSrc(uri.uri);
+        lsSet('salati.adhanName', f.name);
+      }catch(e){
+        if(adhanObjectURL) URL.revokeObjectURL(adhanObjectURL);
+        adhanObjectURL = URL.createObjectURL(f);
+      }
+    }else{
+      if(adhanObjectURL) URL.revokeObjectURL(adhanObjectURL);
+      adhanObjectURL = URL.createObjectURL(f);
+    }
     adhanFileName.textContent = '✓ ' + f.name;
   });
+}
+
+function initPersistedState(){
+  notifyEnabled = lsGet('salati.notify', false) === true;
+  adhanEnabled = lsGet('salati.adhan', false) === true;
+  if(notifToggle) notifToggle.checked = notifyEnabled;
+  if(adhanToggle) adhanToggle.checked = adhanEnabled;
+  if(adhanSub) adhanSub.classList.toggle('open', adhanEnabled);
+  if(adhanEnabled) restoreAdhanObjectURL();
 }
 
 // نغمة تنبيه بسيطة مُولَّدة برمجيًا (Web Audio API) — تُستخدم عند عدم اختيار ملف صوتي
@@ -886,6 +1131,7 @@ if(adhanTest){
 }
 
 function sendPrayerNotification(prayerAr, timeStr){
+  if(hasCapacitor) return; // في التطبيق تُسلَّم الإشعارات عبر نظام أندرويد (قناة الخلفية)، لا عبر واجهة المتصفح
   if(!notifyEnabled || !('Notification' in window) || Notification.permission !== 'granted') return;
   try{
     new Notification('حان وقت ' + prayerAr, { body: 'الساعة ' + timeStr, tag: 'prayer-' + prayerAr });
@@ -907,8 +1153,37 @@ function checkPrayerAlerts(schedule, now){
 }
 
 // جدولة إشعارات حقيقية عبر نظام أندرويد — تُسلَّم حتى لو أُغلق التطبيق كليًا.
-// عكس checkPrayerAlerts (التي تتحقق كل ثانية وتعمل فقط والتطبيق مفتوح)، هذه الدالة
-// تُسجَّل مرة واحدة عند كل تحديث للمواقيت، وتترك تسليم الإشعار لنظام التشغيل نفسه.
+// لكل صلاة إشعاران: تذكير قبل 5 دقائق (بلا صوت)، ثم إشعار وقت الصلاة (بصوت الأذان المضمّن).
+async function ensureChannels(){
+  if(!hasCapacitor || !LN) return;
+  try{
+    const existing = await LN.listChannels();
+    const have = new Set(existing.channels.map(c => c.id));
+    if(!have.has('salati-reminder')){
+      await LN.createChannel({
+        id:'salati-reminder',
+        name:'تذكير الصلاة',
+        description:'تذكير قبل دخول وقت الصلاة بخمس دقائق (بلا صوت)',
+        importance:2, // LOW — بدون صوت حتى لا يزاحم الأذان
+        visibility:1,
+        vibration:true,
+        sound:''
+      });
+    }
+    if(!have.has('salati-adhan')){
+      await LN.createChannel({
+        id:'salati-adhan',
+        name:'صوت الأذان',
+        description:'الأذان عند دخول وقت الصلاة',
+        importance:5,
+        visibility:1,
+        vibration:true,
+        sound:'adhan.mp3' // ملف مضمّن داخل التطبيق: www/adhan.mp3 → assets/public/adhan.mp3
+      });
+    }
+  }catch(e){ /* القنوات غير مدعومة على هذا الجهاز — نكتفي بالسلوك الافتراضي */ }
+}
+
 async function scheduleNativeNotifications(schedule){
   if(!hasCapacitor || !LN) return;
   if(pendingNotifIds.length){
@@ -917,21 +1192,58 @@ async function scheduleNativeNotifications(schedule){
   }
   if(!notifyEnabled) return;
 
+  await ensureChannels();
+
   const now = new Date();
-  const notifications = schedule
-    .filter(p => p.key !== 'Sunrise' && p.date > now)
-    .map((p, i) => ({
-      id: Number(now.toDateString().length + '' + i) || (i+1), // معرّف رقمي بسيط وفريد لهذا اليوم
+  const notifications = [];
+  schedule.forEach(p=>{
+    if(p.key === 'Sunrise' || p.date <= now) return;
+    const mins = Math.floor(p.date.getTime()/60000);
+    notifications.push({
+      id: mins*2, // reminder قبل الموعد بخمس دقائق (زوجي)
+      title: '«' + p.ar + '» بعد 5 دقائق',
+      body: 'استعد للصلاة — الأذان الساعة ' + fmtTime(p.date),
+      schedule: { at: new Date(p.date.getTime() - 5*60000), allowWhileIdle:true },
+      channelId: 'salati-reminder',
+      smallIcon: 'ic_stat_icon_config_sample',
+      iconColor: '#C9A227',
+      sound: ''
+    });
+    notifications.push({
+      id: mins*2 + 1, // وقت الأذان نفسه (فردي)
       title: 'حان وقت ' + p.ar,
       body: 'الساعة ' + fmtTime(p.date),
-      schedule: { at: p.date },
-      sound: null, // الصوت الافتراضي للنظام؛ صوت الأذان المخصص يعمل فقط والتطبيق مفتوح (راجع القسم 7)
-    }));
+      schedule: { at: p.date, allowWhileIdle:true },
+      channelId: 'salati-adhan',
+      smallIcon: 'ic_stat_icon_config_sample',
+      iconColor: '#C9A227',
+      sound: 'adhan.mp3'
+    });
+  });
 
-  if(notifications.length){
-    await LN.schedule({ notifications });
-    pendingNotifIds = notifications.map(n => n.id);
+  const ordered = notifications.sort((a,b) => a.schedule.at - b.schedule.at);
+
+  const result = await LN.schedule({ notifications: ordered });
+  pendingNotifIds = ordered.map(n => n.id);
+
+  if(result && result.warning){
+    // Android 12+ يتطلب منح إذن "المنبهات الدقيقة" — الآلية نفسها يفردها المكوّن
+    const alreadyWarned = lsGet('salati.exactWarned', false);
+    if(!alreadyWarned){
+      lsSet('salati.exactWarned', true);
+      try{
+        await LN.changeExactNotificationSetting();
+      }catch(e){}
+    }
   }
+}
+
+async function restorePendingIds(){
+  if(!hasCapacitor || !LN || !notifyEnabled) return;
+  try{
+    const pending = await LN.getPending();
+    pendingNotifIds = (pending.notifications || []).map(n => n.id);
+  }catch(e){}
 }
 
 const tuneApply = document.getElementById('tuneApply');
@@ -1006,14 +1318,141 @@ function render(data, placeLabel, source){
     </div>
 
     <div class="grid">
-      ${schedule.map(p => `
-        <div class="card" data-key="${p.key}" ${p.key === 'Sunrise' ? 'title="طلوع الشمس"' : ''}>
-          <div class="pname">${p.ar}</div>
+      ${schedule.map(p => {
+        if(p.key === 'Sunrise'){
+          return `
+        <div class="card" data-key="Sunrise" title="طلوع الشمس">
+          <div class="pname"><span>ال</span>شروق</div>
           <div class="ptime">${timings[p.key]}</div>
-        </div>
-      `).join('')}
+        </div>`;
+        }
+        const qs = getQuestions(p.key);
+        const day = getDay(todayKey())[p.key] || {};
+        const answers = qs.map(q => day[q.id]);
+        let mark = '';
+        if(answers.length && answers.every(a => a === 'yes')) mark = '<span class="pray-status ok">✓</span>';
+        else if(answers.length && answers.every(a => a === 'no')) mark = '<span class="pray-status no">✗</span>';
+        else if(answers.length && answers.some(a => a)) mark = '<span class="pray-status part">◐</span>';
+        else if(answers.length) mark = '<span class="pray-status">—</span>';
+        return `
+        <div class="card card-flip" data-key="${p.key}">
+          <div class="card-inner">
+            <div class="card-front">
+              <div class="pname">${mark}${p.ar}</div>
+              <div class="ptime">${timings[p.key]}</div>
+            </div>
+            <div class="card-back">
+              <div class="cb-title">${p.ar}</div>
+              ${qs.map(q => {
+                const val = day[q.id];
+                return `
+                <div>
+                  <div class="cb-q">${esc(q.text)}</div>
+                  <div class="cb-answers" data-q="${q.id}">
+                    <button type="button" class="yes ${val === 'yes' ? 'selected' : ''}" data-v="yes">نعم</button>
+                    <button type="button" class="no ${val === 'no' ? 'selected' : ''}" data-v="no">لا</button>
+                  </div>
+                </div>`;
+              }).join('')}
+              <button type="button" class="cb-close">رجوع للوقت</button>
+            </div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+
+    <div class="pray-progress" id="prayProgress"></div>
+
+    <div class="quick-boxes">
+      <button type="button" class="quick-box" id="qbEditor">
+        📝 تعديل الأسئلة
+        <small>أضف أو عدّل أسئلة كل صلاة</small>
+      </button>
+      <button type="button" class="quick-box" id="qbHistory">
+        📅 سجل الأسبوع
+        <small>صلّيت كل الصلوات؟</small>
+      </button>
     </div>
   `;
+
+  function progressHTML(){
+    const day = getDay(todayKey());
+    const done = PRAYERS.filter(p => p.key !== 'Sunrise')
+      .filter(p => getQuestions(p.key).length)
+      .filter(p => getQuestions(p.key).every(q => (day[p.key] || {})[q.id] === 'yes')).length;
+    return done === 5
+      ? 'أتممت <b>الصلوات الخمس</b> اليوم 🤍'
+      : 'صليت <b>' + done + '</b> من <b>5</b> حتى الآن';
+  }
+
+  const prayProgress = document.getElementById('prayProgress');
+  if(prayProgress) prayProgress.innerHTML = progressHTML();
+
+  bindChecklist();
+
+  function refreshStatusUI(){
+    contentEl.querySelectorAll('.card-flip').forEach(card=>{
+      const key = card.dataset.key;
+      const front = card.querySelector('.card-front .pname');
+      if(!front) return;
+      const qs = getQuestions(key);
+      const day = getDay(todayKey())[key] || {};
+      const answers = qs.map(q => day[q.id]);
+      let mark = '';
+      if(answers.length && answers.every(a => a === 'yes')) mark = '<span class="pray-status ok">✓</span>';
+      else if(answers.length && answers.every(a => a === 'no')) mark = '<span class="pray-status no">✗</span>';
+      else if(answers.length && answers.some(a => a)) mark = '<span class="pray-status part">◐</span>';
+      front.innerHTML = mark + ' ' + PRAYERS.find(p=>p.key===key).ar;
+    });
+    const pp = document.getElementById('prayProgress');
+    if(pp) pp.innerHTML = progressHTML();
+  }
+
+  function bindChecklist(){
+    contentEl.querySelectorAll('.card-flip').forEach(card=>{
+      card.addEventListener('click', (ev)=>{
+        if(ev.target.closest('.cb-answers button') || ev.target.closest('.cb-close')) return;
+        card.classList.toggle('flipped');
+      });
+      card.querySelectorAll('.cb-answers button').forEach(btn=>{
+        btn.addEventListener('click', ev=>{
+          ev.stopPropagation();
+          const key = card.dataset.key;
+          const qid = btn.parentElement.dataset.q;
+          const val = btn.dataset.v;
+          setAnswer(todayKey(), key, qid, val);
+          card.querySelectorAll('.cb-answers').forEach(row=>{
+            if(row.dataset.q === qid){
+              row.querySelectorAll('button').forEach(b=> b.classList.toggle('selected', b.dataset.v === val));
+            }
+          });
+          refreshStatusUI();
+        });
+      });
+      const closeBtn = card.querySelector('.cb-close');
+      if(closeBtn) closeBtn.addEventListener('click', ev=>{
+        ev.stopPropagation();
+        card.classList.remove('flipped');
+      });
+    });
+    const qbE = document.getElementById('qbEditor');
+    if(qbE) qbE.addEventListener('click', ()=> openSettingsSec('qEditorSec'));
+    const qbH = document.getElementById('qbHistory');
+    if(qbH) qbH.addEventListener('click', ()=> openSettingsSec('historySec'));
+  }
+
+  function openSettingsSec(id){
+    setSettingsOpen(true);
+    setTimeout(()=>{
+      const el = document.getElementById(id);
+      if(el){
+        el.scrollIntoView({ behavior:'smooth', block:'start' });
+        el.classList.remove('flash-hl');
+        void el.offsetWidth;
+        el.classList.add('flash-hl');
+      }
+    }, 320);
+  }
 
   els.liveClock = document.getElementById('liveClock');
   els.nextName  = document.getElementById('nextName');
@@ -1116,35 +1555,139 @@ async function fetchByCoords(lat, lon){
   }
 }
 
-const searchBtn = document.getElementById('searchBtn');
-if(searchBtn){
-  searchBtn.addEventListener('click', ()=>{
-    const val = cityInput.value.trim();
-    if(!val) return;
-    fetchByCity(val, 'Algeria');
+/* ── قائمة الولايات (69) ── */
+function buildWilayaList(){
+  const box = document.getElementById('wilayaList');
+  if(!box) return;
+  box.innerHTML =
+    '<button type="button" class="wilaya-item geo" id="geoBtn">📍 موقعي الحالي — تحديد عبر GPS</button>' +
+    ALGERIA_WILAYAS.map(w => `
+      <button type="button" class="wilaya-item ${w.num === savedWilaya.num ? 'selected' : ''}" data-num="${w.num}" data-city="${w.city}" data-ar="${w.ar}">
+        <span class="wnum">${String(w.num).padStart(2,'0')}</span>
+        <span>${w.ar}</span>
+        ${w.num === savedWilaya.num ? '<span class="wcheck">✓</span>' : ''}
+      </button>`).join('');
+  box.querySelectorAll('.wilaya-item[data-num]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const next = { num: Number(btn.dataset.num), ar: btn.dataset.ar, city: btn.dataset.city };
+      savedWilaya = next;
+      lsSet('salati.wilaya', next);
+      buildWilayaList();
+      fetchByCity(next.city, 'Algeria');
+    });
+  });
+  const geo = document.getElementById('geoBtn');
+  if(geo){
+    geo.addEventListener('click', ()=>{
+      if(!navigator.geolocation){
+        showError('المتصفح لا يدعم تحديد الموقع.');
+        return;
+      }
+      contentEl.innerHTML = `<div class="state">جارٍ طلب إذن الموقع…</div>`;
+      navigator.geolocation.getCurrentPosition(
+        pos => fetchByCoords(pos.coords.latitude, pos.coords.longitude),
+        () => showError('تم رفض إذن الموقع. اختر ولايتك من القائمة.')
+      );
+    });
+  }
+}
+
+/* ── محرر أسئلة الصلاة ── */
+let qeditPrayer = 'Fajr';
+function buildQeditNav(){
+  const nav = document.getElementById('qeditNav');
+  if(!nav) return;
+  nav.innerHTML = PRAYERS.filter(p => p.key !== 'Sunrise')
+    .map(p => `<button type="button" data-key="${p.key}" class="${p.key === qeditPrayer ? 'active' : ''}">${p.ar}</button>`).join('');
+  nav.querySelectorAll('button').forEach(b=>{
+    b.addEventListener('click', ()=>{ qeditPrayer = b.dataset.key; buildQeditNav(); buildQeditList(); });
   });
 }
-cityInput.addEventListener('keydown', (e)=>{
-  if(e.key === 'Enter' && searchBtn) searchBtn.click();
-});
-
-const geoBtn = document.getElementById('geoBtn');
-if(geoBtn){
-  geoBtn.addEventListener('click', ()=>{
-    if(!navigator.geolocation){
-      showError('المتصفح لا يدعم تحديد الموقع.');
-      return;
-    }
-    contentEl.innerHTML = `<div class="state">جارٍ طلب إذن الموقع…</div>`;
-    navigator.geolocation.getCurrentPosition(
-      pos => fetchByCoords(pos.coords.latitude, pos.coords.longitude),
-      () => showError('تم رفض إذن الموقع. جرّب البحث باسم المدينة بدلاً من ذلك.')
-    );
+function buildQeditList(){
+  const list = document.getElementById('qeditList');
+  if(!list) return;
+  const qs = getQuestions(qeditPrayer);
+  list.innerHTML = qs.map((q, i)=>`
+    <div class="qedit-row" data-i="${i}">
+      <input type="text" data-idx="${i}" value="${esc(q.text)}" aria-label="نص السؤال">
+      <button type="button" class="del" data-i="${i}">حذف</button>
+    </div>`).join('');
+  list.querySelectorAll('input').forEach(inp=>{
+    inp.addEventListener('change', ()=>{
+      const i = Number(inp.dataset.idx);
+      const qs2 = getQuestions(qeditPrayer);
+      if(qs2[i]){ qs2[i].text = inp.value.trim() || qs2[i].text; saveQuestions(qeditPrayer, qs2); }
+    });
   });
+  list.querySelectorAll('button.del').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      const i = Number(b.dataset.i);
+      const qs2 = getQuestions(qeditPrayer);
+      qs2.splice(i, 1);
+      saveQuestions(qeditPrayer, qs2);
+      buildQeditList();
+    });
+  });
+  const addBtn = document.getElementById('qeditAddBtn');
+  const newInp = document.getElementById('qeditNew');
+  if(addBtn){
+    addBtn.onclick = ()=>{
+      const t = (newInp.value || '').trim();
+      if(!t) return;
+      const qs2 = getQuestions(qeditPrayer);
+      qs2.push({ id: 'q' + String(Date.now()), text: t });
+      saveQuestions(qeditPrayer, qs2);
+      newInp.value = '';
+      buildQeditList();
+    };
+  }
+  const resetBtn = document.getElementById('qeditReset');
+  if(resetBtn){
+    resetBtn.onclick = ()=>{
+      saveQuestions(qeditPrayer, defaultQuestions(qeditPrayer));
+      buildQeditList();
+    };
+  }
 }
 
-// Default: Oran, Algeria
-fetchByCity('Oran', 'Algeria');
+/* ── سجل آخر 7 أيام ── */
+function dayLabel(d){
+  try{
+    return d.toLocaleDateString('ar-DZ', { weekday:'long', day:'numeric', month:'numeric' });
+  }catch(e){ return d.toDateString(); }
+}
+function buildHistory(){
+  const tbl = document.getElementById('histTable');
+  if(!tbl) return;
+  const days = [...Array(7)].map((_, i)=>{ const d = new Date(); d.setDate(d.getDate() - i); return d; });
+  const prayers = PRAYERS.filter(p => p.key !== 'Sunrise');
+  tbl.innerHTML =
+    '<thead><tr><th>اليوم</th>' + prayers.map(p => '<th>' + p.ar + '</th>').join('') + '</tr></thead>' +
+    '<tbody>' +
+    days.map(d=>{
+      const day = getDay(locDateKey(d));
+      const cells = prayers.map(p=>{
+        const qs = getQuestions(p.key);
+        const dd = day[p.key] || {};
+        if(!qs.length || qs.every(q => !dd[q.id])) return '<td class="hna">—</td>';
+        const allYes = qs.every(q => dd[q.id] === 'yes');
+        const anyNo  = qs.some(q => dd[q.id] === 'no');
+        return allYes ? '<td class="hok">✓</td>' : anyNo ? '<td class="hno">✗</td>' : '<td class="hna">◐</td>';
+      }).join('');
+      return '<tr><td>' + dayLabel(d) + '</td>' + cells + '</tr>';
+    }).join('') +
+    '</tbody>';
+}
+
+buildWilayaList();
+buildQeditNav();
+buildQeditList();
+buildHistory();
+initPersistedState();
+restorePendingIds();
+
+// Default: الولدية المحفوظة (وهران افتراضيًا)
+fetchByCity(savedWilaya.city, 'Algeria');
 </script>
 
 

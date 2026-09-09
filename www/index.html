@@ -426,7 +426,7 @@
   .pray-progress b{ color:var(--gold-soft); }
 
   /* ─── Quick boxes (editor / history) ─── */
-  .quick-boxes{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:18px; }
+  .quick-boxes{ display:grid; grid-template-columns:1fr; gap:12px; margin-top:18px; }
   .quick-box{
     border:1px solid var(--line); border-radius:var(--r); padding:15px 12px;
     background:var(--surface); color:var(--sand); cursor:pointer; text-align:center;
@@ -466,33 +466,46 @@
   .hist-table td.hno{ color:var(--danger); }
   .hist-table td.hna{ color:var(--faint); }
 
-  /* ─── Question editor ─── */
-  .qedit-nav{ display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px; }
-  .qedit-nav button{
-    padding:6px 12px; border-radius:999px; border:1px solid var(--line); background:var(--surface-2);
-    color:var(--sand); font-family:'Tajawal',system-ui,sans-serif; font-size:12.5px; cursor:pointer;
+  /* ─── Location row + full-screen wilaya overlay ─── */
+  .wilaya-row{
+    display:flex; align-items:center; flex-wrap:wrap; gap:10px;
+    border:1px solid var(--line); border-radius:16px; padding:10px 12px; background:var(--surface);
   }
-  .qedit-nav button.active{ border-color:rgba(201,162,39,.6); color:var(--gold-soft); background:rgba(201,162,39,.1); }
-  .qedit-row{ display:flex; align-items:center; gap:8px; margin-bottom:8px; }
-  .qedit-row input{
-    flex:1; background:var(--surface-2); color:var(--sand); border:1px solid var(--line);
-    border-radius:10px; padding:9px 10px; font-size:13px; font-family:'Tajawal',system-ui,sans-serif;
+  .wilaya-row-label{ color:var(--muted); font-size:13.5px; line-height:1.7; }
+  .wilaya-row-label strong{ color:var(--sand); font-weight:700; }
+  .wilaya-row-actions{ display:flex; gap:8px; margin-inline-start:auto; }
+  .wrow-btn{
+    border:1px solid var(--line); background:var(--surface-2); color:var(--sand);
+    border-radius:12px; padding:8px 13px; font-size:12.5px; cursor:pointer;
+    font-family:'Tajawal',system-ui,sans-serif; transition:border-color .2s ease, background .2s ease;
   }
-  .qedit-row button{
-    border:1px solid var(--line); background:var(--surface-2); color:var(--gold-soft);
-    border-radius:10px; padding:8px 10px; font-size:12.5px; cursor:pointer; font-family:'Tajawal',system-ui,sans-serif;
+  .wrow-btn:hover{ border-color:rgba(201,162,39,.45); }
+  .wrow-btn.geo{ border-color:rgba(201,162,39,.5); color:var(--gold-soft); background:rgba(201,162,39,.1); }
+  .wilaya-overlay{
+    position: fixed; inset: 0; z-index: 110;
+    background: rgba(5,16,13,.92); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    display: flex; flex-direction: column;
+    opacity: 0; visibility: hidden; transform: translateY(14px) scale(.995);
+    transition: opacity .28s ease, transform .28s ease, visibility .28s;
+    pointer-events: none;
   }
-  .qedit-row button.del{ color:var(--danger); }
-  .qedit-add{ margin-top:10px; display:flex; gap:8px; }
-  .qedit-add input{
-    flex:1; background:var(--surface-2); color:var(--sand); border:1px solid var(--line);
-    border-radius:10px; padding:9px 10px; font-size:13px; font-family:'Tajawal',system-ui,sans-serif;
+  .wilaya-overlay.open{ opacity: 1; visibility: visible; transform: none; pointer-events: auto; }
+  .wilaya-overlay-body{
+    flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch;
+    padding: 16px max(20px, env(safe-area-inset-right)) calc(48px + env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
   }
-  .qedit-add button{
-    border:1px solid rgba(201,162,39,.5); background:rgba(201,162,39,.12); color:var(--gold-soft);
-    border-radius:10px; padding:9px 14px; cursor:pointer; font-family:'Tajawal',system-ui,sans-serif;
+  .wilaya-overlay .wilaya-list{
+    width:100%; max-height:none; overflow-y:visible; display:grid; gap:6px;
+    border:none; border-radius:0; padding:0; background:transparent;
   }
-  .qedit-reset{ margin-top:14px; border:1px solid var(--line); background:none; color:var(--muted); border-radius:10px; padding:8px 12px; font-size:12.5px; cursor:pointer; font-family:'Tajawal',system-ui,sans-serif; }
+  .wilaya-overlay-body .wilaya-item{ background:var(--surface); }
+  .wilaya-divider{
+    color:var(--muted); font-size:12px; margin:14px 2px 8px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .wilaya-divider::after{ content:''; flex:1; height:1px; background:var(--line-soft); }
+  .wilaya-item.geo{ border-style:dashed; border-color:rgba(201,162,39,.45); }
+  .wilaya-item.geo.selected{ border-style:solid; }
   .flash-hl{ animation: flashHl 1.6s ease; }
   @keyframes flashHl{ 0%,55%{ box-shadow: 0 0 0 2px rgba(201,162,39,.7); background:rgba(201,162,39,.08);} 100%{ box-shadow:none; } }
 
@@ -572,8 +585,14 @@
   <div class="sh-body">
     <section class="settings-sec loc-sec">
       <h3>المدينة والموقع</h3>
-      <p>اختر ولايتك من القائمة (69 ولاية). يجري استخدام الحساب المحلي عند انقطاع الإنترنت.</p>
-      <div class="wilaya-list" id="wilayaList"></div>
+      <p>اختر ولايتك من قائمة الـ 69 ولاية، أو استخدم موقعك الحالي ولو كنت خارج الجزائر. عند انقطاع الإنترنت تُحسب المواقيت محليًا من آخر موقع معروف.</p>
+      <div class="wilaya-row">
+        <div class="wilaya-row-label" id="curLocLabel">—</div>
+        <div class="wilaya-row-actions">
+          <button type="button" class="wrow-btn" id="wilayaChangeBtn">تغيير</button>
+          <button type="button" class="wrow-btn geo" id="wilayaLocBtn">📍 موقعي</button>
+        </div>
+      </div>
     </section>
 
     <section class="settings-sec">
@@ -627,23 +646,31 @@
       <div class="notif-hint">في تطبيق أندرويد: الإشعاران (التذكير + الأذان) يُسلَّمان بنظام التشغيل حتى لو أُغلق التطبيق. تأكد من إبقاء "المُنبِّهات الدقيقة" و"استخدام بيانات الخلفية" مفعّلة في إعدادات النظام.</div>
     </section>
 
-    <section class="settings-sec" id="qEditorSec">
-      <h3>📝 تخصيص أسئلة الصلاة</h3>
-      <p>اضغط على بطاقة أي صلاة لتقلبها وترى سؤالها، وأجب بنعم/لا ليتتبّع التطبيق صلواتك اليومية. هنا يمكنك إضافة أو تعديل أو حذف أسئلة لكل صلاة على حدة.</p>
-      <div class="qedit-nav" id="qeditNav"></div>
-      <div id="qeditList"></div>
-      <div class="qedit-add">
-        <input type="text" id="qeditNew" placeholder="سؤال جديد…" aria-label="سؤال جديد">
-        <button type="button" id="qeditAddBtn">إضافة</button>
-      </div>
-      <button type="button" class="qedit-reset" id="qeditReset">↺ إعادة الصلاة إلى السؤال الافتراضي</button>
-    </section>
-
     <section class="settings-sec" id="historySec">
       <h3>📅 سجل الصلاة</h3>
       <p>إجابات الأيام السبعة الأخيرة — تُحذف السجلات تلقائيًا بعد 30 يومًا.</p>
       <div class="hist-scroll"><table class="hist-table" id="histTable"></table></div>
     </section>
+  </div>
+</div>
+
+<div class="wilaya-overlay" id="wilayaOverlay" role="dialog" aria-modal="true" aria-label="اختيار الولاية">
+  <div class="sh-head">
+    <div class="sh-title">اختر ولايتك</div>
+    <button id="wilayaClose" class="sh-close" aria-label="إغلاق" title="إغلاق">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M18 6 6 18"></path>
+        <path d="m6 6 12 12"></path>
+      </svg>
+    </button>
+  </div>
+  <div class="wilaya-overlay-body">
+    <button type="button" class="wilaya-item geo" id="geoWilayaBtn">
+      <span class="wnum">📍</span>
+      <span>خارج الجزائر — حدّد موقعي</span>
+    </button>
+    <div class="wilaya-divider">الولايات (69)</div>
+    <div class="wilaya-list" id="wilayaList"></div>
   </div>
 </div>
 
@@ -806,7 +833,7 @@ const TUNE_PRAYERS = [
   { key: 'Maghrib', ar: 'المغرب' },
   { key: 'Isha',    ar: 'العشاء' },
 ];
-let tune = { Fajr:0, Sunrise:0, Dhuhr:0, Asr:0, Maghrib:0, Isha:0 };
+let tune = lsGet('salati.tune', { Fajr:0, Sunrise:0, Dhuhr:0, Asr:0, Maghrib:0, Isha:0 });
 let lastQuery = null; // { type:'city', city, country } or { type:'coords', lat, lon }
 let lastSchedule = null;      // آخر جدول أوقات صلاة تم عرضه (لإعادة الجدولة عند تفعيل الإشعارات لاحقًا)
 let pendingNotifIds = [];     // معرّفات الإشعارات المجدولة حاليًا عبر Capacitor
@@ -868,7 +895,10 @@ if(settingsClose){
 }
 
 document.addEventListener('keydown', (e)=>{
-  if(e.key === 'Escape') setSettingsOpen(false);
+  if(e.key === 'Escape'){
+    setSettingsOpen(false);
+    closeWilayaOverlay();
+  }
 });
 
 /* =========================================================================
@@ -944,6 +974,70 @@ function findAlgeriaCity(name){
   return e ? [e.lat, e.lon] : null;
 }
 let savedWilaya = lsGet('salati.wilaya', { num:31, ar:'وهران', city:'Oran' });
+let savedLocMode = lsGet('salati.locMode', 'wilaya');     // 'wilaya' أو 'gps'
+let savedGps = lsGet('salati.gps', null);                 // آخر موقع GPS معروف {lat,lon,ts}
+
+/* ── تحديد الموقع (GPS) + حالة "خارج الجزائر" ── */
+function algeriaContains(lat, lon){ return lat >= 18.9 && lat <= 37.1 && lon >= -8.7 && lon <= 12.0; }
+function gpsPlaceLabel(){
+  if(savedLocMode !== 'gps' || !savedGps) return 'موقعك الحالي';
+  return algeriaContains(savedGps.lat, savedGps.lon) ? 'موقعك الحالي' : 'خارج الجزائر';
+}
+function updateWilayaRow(){
+  const el = document.getElementById('curLocLabel');
+  if(!el) return;
+  el.innerHTML = savedLocMode === 'gps'
+    ? 'الموقع الحالي: <strong>' + esc(gpsPlaceLabel()) + '</strong>'
+    : 'الولاية الحالية: <strong>' + esc(savedWilaya.ar) + '</strong>';
+}
+function useMyLocation(){
+  closeWilayaOverlay();
+  setSettingsOpen(false);
+  if(!navigator.geolocation){
+    showError('متصفحك لا يدعم تحديد الموقع. اختر ولاية من القائمة.');
+    return;
+  }
+  contentEl.innerHTML = `<div class="state">جارٍ تحديد موقعك…</div>`;
+  navigator.geolocation.getCurrentPosition(pos=>{
+    savedGps = {
+      lat: +Number(pos.coords.latitude).toFixed(5),
+      lon: +Number(pos.coords.longitude).toFixed(5),
+      ts: Date.now()
+    };
+    savedLocMode = 'gps';
+    lsSet('salati.gps', savedGps);
+    lsSet('salati.locMode', 'gps');
+    buildWilayaList();
+    updateWilayaRow();
+    fetchByCoords(savedGps.lat, savedGps.lon);
+  }, err=>{
+    showError('تعذّر تحديد موقعك (' + err.message + '). تأكد من تفعيل الموقع في إعدادات الجهاز، أو اختر ولاية من القائمة.');
+    buildWilayaList();
+  }, { timeout: 15000, maximumAge: 60000 });
+}
+function openWilayaOverlay(){
+  const ov = document.getElementById('wilayaOverlay');
+  if(!ov) return;
+  ov.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeWilayaOverlay(){
+  const ov = document.getElementById('wilayaOverlay');
+  if(!ov) return;
+  ov.classList.remove('open');
+  const panel = document.getElementById('settingsPanel');
+  if(!panel || !panel.classList.contains('open')) document.body.style.overflow = '';
+}
+const wilayaChangeBtn = document.getElementById('wilayaChangeBtn');
+if(wilayaChangeBtn) wilayaChangeBtn.addEventListener('click', openWilayaOverlay);
+const wilayaCloseBtn = document.getElementById('wilayaClose');
+if(wilayaCloseBtn) wilayaCloseBtn.addEventListener('click', closeWilayaOverlay);
+const wilayaLocBtn = document.getElementById('wilayaLocBtn');
+if(wilayaLocBtn) wilayaLocBtn.addEventListener('click', useMyLocation);
+const wilayaOverlayEl = document.getElementById('wilayaOverlay');
+if(wilayaOverlayEl) wilayaOverlayEl.addEventListener('click', e=>{
+  if(e.target === wilayaOverlayEl) closeWilayaOverlay();
+});
 
 /* ── قائمة أسئلة الصلاة + سجل الإجابات (آخر 30 يومًا) ── */
 const DEFAULT_QUESTIONS = {
@@ -955,14 +1049,7 @@ const DEFAULT_QUESTIONS = {
 };
 function defaultQuestions(key){ return JSON.parse(JSON.stringify((DEFAULT_QUESTIONS[key] || [{ id:key, text:'هل صليت هذه الصلاة اليوم؟' }]))); }
 function getQuestions(key){
-  return lsGet('salati.questions.' + key, null) || defaultQuestions(key);
-}
-function saveQuestions(key, questions){
-  const trimmed = questions.filter(q => q.text && String(q.text).trim());
-  if(!trimmed.length){ try{ localStorage.removeItem('salati.questions.' + key); }catch(e){} }
-  else{
-    try{ localStorage.setItem('salati.questions.' + key, JSON.stringify(trimmed)); }catch(e){}
-  }
+  return defaultQuestions(key);
 }
 function locDateKey(d){ return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
 function todayKey(){ return locDateKey(new Date()); }
@@ -1040,6 +1127,7 @@ if(adhanToggle){
     adhanEnabled = adhanToggle.checked;
     adhanSub.classList.toggle('open', adhanEnabled);
     lsSet('salati.adhan', adhanEnabled);
+    if(hasCapacitor && lastSchedule && (notifyEnabled || adhanEnabled)) scheduleNativeNotifications(lastSchedule);
   });
 }
 
@@ -1164,6 +1252,16 @@ function checkPrayerAlerts(schedule, now){
 async function ensureChannels(){
   if(!hasCapacitor || !LN) return;
   try{
+    // إعادة إنشاء القنوات عند تغيّر بنية قنواتنا (مرة واحدة) حتى يُطبَّق الصوت
+    // حتى على التثبيتات المحدَّثة — صوت القناة ثابت بعد إنشائها في أندرويد 8+.
+    const CHANNEL_CFG_VERSION = 2;
+    if(lsGet('salati.chVer', 0) !== CHANNEL_CFG_VERSION){
+      try{
+        await LN.deleteChannel({ id:'salati-reminder' });
+        await LN.deleteChannel({ id:'salati-adhan' });
+      }catch(e){}
+      lsSet('salati.chVer', CHANNEL_CFG_VERSION);
+    }
     const existing = await LN.listChannels();
     const have = new Set(existing.channels.map(c => c.id));
     if(!have.has('salati-reminder')){
@@ -1197,7 +1295,7 @@ async function scheduleNativeNotifications(schedule){
     await LN.cancel({ notifications: pendingNotifIds.map(id => ({ id })) });
     pendingNotifIds = [];
   }
-  if(!notifyEnabled) return;
+  if(!notifyEnabled && !adhanEnabled) return;
 
   await ensureChannels();
 
@@ -1206,26 +1304,30 @@ async function scheduleNativeNotifications(schedule){
   schedule.forEach(p=>{
     if(p.key === 'Sunrise' || p.date <= now) return;
     const mins = Math.floor(p.date.getTime()/60000);
-    notifications.push({
-      id: mins*2, // reminder قبل الموعد بخمس دقائق (زوجي)
-      title: '«' + p.ar + '» بعد 5 دقائق',
-      body: 'استعد للصلاة — الأذان الساعة ' + fmtTime(p.date),
-      schedule: { at: new Date(p.date.getTime() - 5*60000), allowWhileIdle:true },
-      channelId: 'salati-reminder',
-      smallIcon: 'ic_stat_icon_config_sample',
-      iconColor: '#C9A227',
-      sound: ''
-    });
-    notifications.push({
-      id: mins*2 + 1, // وقت الأذان نفسه (فردي)
-      title: 'حان وقت ' + p.ar,
-      body: 'الساعة ' + fmtTime(p.date),
-      schedule: { at: p.date, allowWhileIdle:true },
-      channelId: 'salati-adhan',
-      smallIcon: 'ic_stat_icon_config_sample',
-      iconColor: '#C9A227',
-      sound: 'adhan.mp3'
-    });
+    if(notifyEnabled){
+      notifications.push({
+        id: mins*2, // reminder قبل الموعد بخمس دقائق (زوجي)
+        title: '«' + p.ar + '» بعد 5 دقائق',
+        body: 'استعد للصلاة — الأذان الساعة ' + fmtTime(p.date),
+        schedule: { at: new Date(p.date.getTime() - 5*60000), allowWhileIdle:true },
+        channelId: 'salati-reminder',
+        smallIcon: 'ic_stat_icon_config_sample',
+        iconColor: '#C9A227',
+        sound: ''
+      });
+    }
+    if(notifyEnabled || adhanEnabled){
+      notifications.push({
+        id: mins*2 + 1, // وقت الأذان نفسه (فردي)
+        title: 'حان وقت ' + p.ar,
+        body: 'الساعة ' + fmtTime(p.date),
+        schedule: { at: p.date, allowWhileIdle:true },
+        channelId: 'salati-adhan',
+        smallIcon: 'ic_stat_icon_config_sample',
+        iconColor: '#C9A227',
+        sound: adhanEnabled ? 'adhan.mp3' : ''
+      });
+    }
   });
 
   const ordered = notifications.sort((a,b) => a.schedule.at - b.schedule.at);
@@ -1246,7 +1348,7 @@ async function scheduleNativeNotifications(schedule){
 }
 
 async function restorePendingIds(){
-  if(!hasCapacitor || !LN || !notifyEnabled) return;
+  if(!hasCapacitor || !LN || (!notifyEnabled && !adhanEnabled)) return;
   try{
     const pending = await LN.getPending();
     pendingNotifIds = (pending.notifications || []).map(n => n.id);
@@ -1258,6 +1360,7 @@ if(tuneApply) tuneApply.addEventListener('click', ()=>{
   TUNE_PRAYERS.forEach(p=>{
     tune[p.key] = Number(document.getElementById('tune-' + p.key).value) || 0;
   });
+  lsSet('salati.tune', tune);
   if(lastQuery){
     if(lastQuery.type === 'city') fetchByCity(lastQuery.city, lastQuery.country);
     else fetchByCoords(lastQuery.lat, lastQuery.lon);
@@ -1267,6 +1370,7 @@ if(tuneApply) tuneApply.addEventListener('click', ()=>{
 const tuneResetEl = document.getElementById('tuneReset');
 if(tuneResetEl) tuneResetEl.addEventListener('click', ()=>{
   TUNE_PRAYERS.forEach(p=> tune[p.key] = 0);
+  lsSet('salati.tune', tune);
   buildTuneGrid();
   if(lastQuery){
     if(lastQuery.type === 'city') fetchByCity(lastQuery.city, lastQuery.country);
@@ -1371,10 +1475,6 @@ function render(data, placeLabel, source){
     <div class="pray-progress" id="prayProgress"></div>
 
     <div class="quick-boxes">
-      <button type="button" class="quick-box" id="qbEditor">
-        📝 تعديل الأسئلة
-        <small>أضف أو عدّل أسئلة كل صلاة</small>
-      </button>
       <button type="button" class="quick-box" id="qbHistory">
         📅 سجل الأسبوع
         <small>صلّيت كل الصلوات؟</small>
@@ -1442,8 +1542,6 @@ function render(data, placeLabel, source){
         card.classList.remove('flipped');
       });
     });
-    const qbE = document.getElementById('qbEditor');
-    if(qbE) qbE.addEventListener('click', ()=> openSettingsSec('qEditorSec'));
     const qbH = document.getElementById('qbHistory');
     if(qbH) qbH.addEventListener('click', ()=> openSettingsSec('historySec'));
   }
@@ -1502,7 +1600,7 @@ function render(data, placeLabel, source){
   }
 
   lastSchedule = schedule;
-  if(hasCapacitor && notifyEnabled) scheduleNativeNotifications(schedule);
+  if(hasCapacitor && (notifyEnabled || adhanEnabled)) scheduleNativeNotifications(schedule);
 
   update();
   tickHandle = setInterval(update, 1000);
@@ -1554,93 +1652,51 @@ async function fetchByCoords(lat, lon){
     const res = await fetchWithTimeout(url, 6000);
     const json = await res.json();
     if(json.code !== 200) throw new Error('coords_failed');
-    render(json.data, 'موقعك الحالي', 'online');
+    render(json.data, gpsPlaceLabel(), 'online');
   }catch(e){
-    // بدون إنترنت لكن الإحداثيات متوفرة من GPS الجهاز — نحسب محليًا مباشرة
+    // بدون إنترنت لكن الإحداثيات متوفرة (من GPS الآن أو من آخر موقع محفوظ) — نحسب محليًا مباشرة
     const data = computeLocalData(new Date(), lat, lon);
-    render(data, 'موقعك الحالي', 'offline');
+    render(data, gpsPlaceLabel(), 'offline');
   }
 }
 
-/* ── قائمة الولايات (69) ── */
+/* ── قائمة الولايات (69) + خارج الجزائر ── */
 function buildWilayaList(){
   const box = document.getElementById('wilayaList');
   if(!box) return;
+
+  const geoBtn = document.getElementById('geoWilayaBtn');
+  if(geoBtn){
+    geoBtn.classList.toggle('selected', savedLocMode === 'gps');
+    geoBtn.innerHTML = savedLocMode === 'gps'
+      ? '<span class="wnum">📍</span><span>' + esc(gpsPlaceLabel()) + '</span><span class="wcheck">✓</span>'
+      : '<span class="wnum">📍</span><span>خارج الجزائر — حدّد موقعي</span>';
+  }
+
   box.innerHTML =
     ALGERIA_WILAYAS.map(w => `
-      <button type="button" class="wilaya-item ${w.num === savedWilaya.num ? 'selected' : ''}" data-num="${w.num}" data-city="${w.city}" data-ar="${w.ar}">
+      <button type="button" class="wilaya-item ${(savedLocMode !== 'gps' && w.num === savedWilaya.num) ? 'selected' : ''}" data-num="${w.num}" data-city="${w.city}" data-ar="${w.ar}">
         <span class="wnum">${String(w.num).padStart(2,'0')}</span>
         <span>${w.ar}</span>
-        ${w.num === savedWilaya.num ? '<span class="wcheck">✓</span>' : ''}
+        ${(savedLocMode !== 'gps' && w.num === savedWilaya.num) ? '<span class="wcheck">✓</span>' : ''}
       </button>`).join('');
   box.querySelectorAll('.wilaya-item[data-num]').forEach(btn=>{
     btn.addEventListener('click', ()=>{
       const next = { num: Number(btn.dataset.num), ar: btn.dataset.ar, city: btn.dataset.city };
       savedWilaya = next;
+      savedLocMode = 'wilaya';
       lsSet('salati.wilaya', next);
+      lsSet('salati.locMode', 'wilaya');
       buildWilayaList();
+      updateWilayaRow();
+      closeWilayaOverlay();
       fetchByCity(next.city, 'Algeria');
     });
   });
 }
 
-/* ── محرر أسئلة الصلاة ── */
-let qeditPrayer = 'Fajr';
-function buildQeditNav(){
-  const nav = document.getElementById('qeditNav');
-  if(!nav) return;
-  nav.innerHTML = PRAYERS.filter(p => p.key !== 'Sunrise')
-    .map(p => `<button type="button" data-key="${p.key}" class="${p.key === qeditPrayer ? 'active' : ''}">${p.ar}</button>`).join('');
-  nav.querySelectorAll('button').forEach(b=>{
-    b.addEventListener('click', ()=>{ qeditPrayer = b.dataset.key; buildQeditNav(); buildQeditList(); });
-  });
-}
-function buildQeditList(){
-  const list = document.getElementById('qeditList');
-  if(!list) return;
-  const qs = getQuestions(qeditPrayer);
-  list.innerHTML = qs.map((q, i)=>`
-    <div class="qedit-row" data-i="${i}">
-      <input type="text" data-idx="${i}" value="${esc(q.text)}" aria-label="نص السؤال">
-      <button type="button" class="del" data-i="${i}">حذف</button>
-    </div>`).join('');
-  list.querySelectorAll('input').forEach(inp=>{
-    inp.addEventListener('change', ()=>{
-      const i = Number(inp.dataset.idx);
-      const qs2 = getQuestions(qeditPrayer);
-      if(qs2[i]){ qs2[i].text = inp.value.trim() || qs2[i].text; saveQuestions(qeditPrayer, qs2); }
-    });
-  });
-  list.querySelectorAll('button.del').forEach(b=>{
-    b.addEventListener('click', ()=>{
-      const i = Number(b.dataset.i);
-      const qs2 = getQuestions(qeditPrayer);
-      qs2.splice(i, 1);
-      saveQuestions(qeditPrayer, qs2);
-      buildQeditList();
-    });
-  });
-  const addBtn = document.getElementById('qeditAddBtn');
-  const newInp = document.getElementById('qeditNew');
-  if(addBtn){
-    addBtn.onclick = ()=>{
-      const t = (newInp.value || '').trim();
-      if(!t) return;
-      const qs2 = getQuestions(qeditPrayer);
-      qs2.push({ id: 'q' + String(Date.now()), text: t });
-      saveQuestions(qeditPrayer, qs2);
-      newInp.value = '';
-      buildQeditList();
-    };
-  }
-  const resetBtn = document.getElementById('qeditReset');
-  if(resetBtn){
-    resetBtn.onclick = ()=>{
-      saveQuestions(qeditPrayer, defaultQuestions(qeditPrayer));
-      buildQeditList();
-    };
-  }
-}
+const geoWilayaBtn = document.getElementById('geoWilayaBtn');
+if(geoWilayaBtn) geoWilayaBtn.addEventListener('click', useMyLocation);
 
 /* ── سجل آخر 7 أيام ── */
 function dayLabel(d){
@@ -1672,14 +1728,17 @@ function buildHistory(){
 }
 
 buildWilayaList();
-buildQeditNav();
-buildQeditList();
+updateWilayaRow();
 buildHistory();
 initPersistedState();
 restorePendingIds();
 
-// Default: الولدية المحفوظة (وهران افتراضيًا)
-fetchByCity(savedWilaya.city, 'Algeria');
+// Default: زالولاية المحفوظة (وهران افتراضيًا)، أو آخر موقع GPS إن كان المستخدم خارج الجزائر
+if(savedLocMode === 'gps' && savedGps){
+  fetchByCoords(savedGps.lat, savedGps.lon);
+}else{
+  fetchByCity(savedWilaya.city, 'Algeria');
+}
 </script>
 
 

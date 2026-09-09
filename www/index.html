@@ -1117,12 +1117,20 @@ function playChime(){
 }
 
 function playAdhanSound(){
-  if(adhanObjectURL){
-    const audio = new Audio(adhanObjectURL);
-    audio.play().catch(()=> playChime());
-  }else{
-    playChime();
-  }
+  const useCustom = !!adhanObjectURL;
+  const src = useCustom ? adhanObjectURL : 'adhan.mp3';
+  const audio = new Audio(src);
+  audio.volume = 1;
+  audio.play().catch(()=>{
+    // الملف المخصص تعذّر تشغيله؟ جرّب الملف المضمّن كاحتياط، ثم النغمة كملاذ أخير
+    if(useCustom){
+      const alt = new Audio('adhan.mp3');
+      alt.volume = 1;
+      alt.play().catch(()=> playChime());
+    }else{
+      playChime();
+    }
+  });
 }
 
 if(adhanTest){

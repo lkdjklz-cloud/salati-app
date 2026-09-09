@@ -456,7 +456,6 @@
   .wilaya-item:hover{ border-color:rgba(201,162,39,.35); }
   .wilaya-item.selected{ border-color:rgba(201,162,39,.6); background:rgba(201,162,39,.1); }
   .wilaya-item .wcheck{ margin-inline-start:auto; color:var(--gold); font-weight:700; }
-  .wilaya-item.geo{ justify-content:center; color:var(--gold-soft); border-style:dashed; }
 
   /* ─── Checklist history ─── */
   .hist-scroll{ max-height:260px; overflow-y:auto; }
@@ -573,7 +572,7 @@
   <div class="sh-body">
     <section class="settings-sec loc-sec">
       <h3>المدينة والموقع</h3>
-      <p>اختر ولايتك من القائمة (69 ولاية)، أو استخدم موقعك الحالي لتحديد المواقيت تلقائيًا. يجري استخدام الحساب المحلي عند انقطاع الإنترنت.</p>
+      <p>اختر ولايتك من القائمة (69 ولاية). يجري استخدام الحساب المحلي عند انقطاع الإنترنت.</p>
       <div class="wilaya-list" id="wilayaList"></div>
     </section>
 
@@ -1533,7 +1532,7 @@ async function fetchByCity(city, country){
       const data = computeLocalData(new Date(), coords[0], coords[1], city);
       render(data, `${city}${country ? ', ' + country : ''}`, 'offline');
     }else{
-      showError('لا يوجد اتصال بالإنترنت، ولم أتعرّف على هذه المدينة في القائمة المحلية. جرّب مدينة جزائرية معروفة أو زر "موقعي الحالي".');
+      showError('لا يوجد اتصال بالإنترنت، ولم أتعرّف على هذه المدينة في القائمة المحلية. جرّب ولاية أخرى من القائمة.');
     }
   }
 }
@@ -1560,7 +1559,6 @@ function buildWilayaList(){
   const box = document.getElementById('wilayaList');
   if(!box) return;
   box.innerHTML =
-    '<button type="button" class="wilaya-item geo" id="geoBtn">📍 موقعي الحالي — تحديد عبر GPS</button>' +
     ALGERIA_WILAYAS.map(w => `
       <button type="button" class="wilaya-item ${w.num === savedWilaya.num ? 'selected' : ''}" data-num="${w.num}" data-city="${w.city}" data-ar="${w.ar}">
         <span class="wnum">${String(w.num).padStart(2,'0')}</span>
@@ -1576,20 +1574,6 @@ function buildWilayaList(){
       fetchByCity(next.city, 'Algeria');
     });
   });
-  const geo = document.getElementById('geoBtn');
-  if(geo){
-    geo.addEventListener('click', ()=>{
-      if(!navigator.geolocation){
-        showError('المتصفح لا يدعم تحديد الموقع.');
-        return;
-      }
-      contentEl.innerHTML = `<div class="state">جارٍ طلب إذن الموقع…</div>`;
-      navigator.geolocation.getCurrentPosition(
-        pos => fetchByCoords(pos.coords.latitude, pos.coords.longitude),
-        () => showError('تم رفض إذن الموقع. اختر ولايتك من القائمة.')
-      );
-    });
-  }
 }
 
 /* ── محرر أسئلة الصلاة ── */

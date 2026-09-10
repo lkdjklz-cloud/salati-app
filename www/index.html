@@ -1254,7 +1254,7 @@ async function ensureChannels(){
   try{
     // إعادة إنشاء القنوات عند تغيّر بنية قنواتنا (مرة واحدة) حتى يُطبَّق الصوت
     // حتى على التثبيتات المحدَّثة — صوت القناة ثابت بعد إنشائها في أندرويد 8+.
-    const CHANNEL_CFG_VERSION = 2;
+    const CHANNEL_CFG_VERSION = 3;
     if(lsGet('salati.chVer', 0) !== CHANNEL_CFG_VERSION){
       try{
         await LN.deleteChannel({ id:'salati-reminder' });
